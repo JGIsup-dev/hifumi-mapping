@@ -146,6 +146,41 @@
   .task-issue { color: #dc2626; font-size: 10px; margin-top: 1px; font-weight: 600; }
   .task-issue::before { content: "⚠ "; }
 
+  /* task category badges */
+  .cat { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 9.5px; font-weight: 700; margin-right: 4px; vertical-align: middle; letter-spacing: 0.02em; }
+  .cat-input { background: #dbeafe; color: #1e40af; }
+  .cat-trans { background: #fed7aa; color: #9a3412; }
+  .cat-line  { background: #dcfce7; color: #166534; }
+  .cat-check { background: #e7e5e4; color: #57534e; }
+
+  .swim-actor .counters { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; font-size: 10px; font-weight: 600; }
+  .swim-actor .counters span { background: rgba(255,255,255,0.1); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); white-space: nowrap; }
+
+  /* workload summary */
+  .workload { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .workload h3 { margin: 0 0 12px; font-size: 16px; border-left: 4px solid var(--text); padding-left: 10px; }
+  .workload-grid { display: grid; grid-template-columns: 160px 1fr 60px; gap: 6px 12px; align-items: center; font-size: 12.5px; }
+  .workload-actor { font-weight: 600; color: var(--text); }
+  .workload-bars { display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: #f5f5f4; }
+  .workload-bar { display: flex; align-items: center; justify-content: center; color: white; font-size: 10.5px; font-weight: 700; min-width: 0; }
+  .bar-input { background: #2563eb; }
+  .bar-trans { background: #ea580c; }
+  .bar-line  { background: #16a34a; }
+  .bar-check { background: #78716c; }
+  .workload-total { text-align: right; font-family: "SF Mono", Menlo, monospace; font-weight: 700; color: var(--muted); }
+  .workload-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--muted); }
+  .workload-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .workload-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+
+  /* LINE channel map */
+  .linemap { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 18px 20px; margin: 20px 0; }
+  .linemap h3 { margin: 0 0 10px; font-size: 15px; color: #065f46; border-left: 4px solid #16a34a; padding-left: 10px; }
+  .linemap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .line-ch { background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 12px; font-size: 12px; }
+  .line-ch .ch-name { font-weight: 700; color: #065f46; font-size: 13px; margin-bottom: 4px; }
+  .line-ch .ch-flow { color: #44403c; font-size: 11.5px; margin: 2px 0; }
+  .line-ch .ch-purpose { color: #57534e; font-size: 11px; margin-top: 4px; font-style: italic; }
+
   .steplist { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0; margin: 16px 0; overflow: hidden; }
   .steplist-row { display: grid; grid-template-columns: 40px 130px 1fr 200px 130px 80px; gap: 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
   .steplist-row:last-child { border-bottom: none; }
@@ -180,10 +215,18 @@
 <p>MTG#5・#6・#7・#8 のヒアリング内容から、一二三様の現行業務フローを<strong>アクター別スイムレーン</strong>で可視化。各セルはそのアクターがその局面で行う作業で、アイコン 📍 は使用ツール／場所、⚠ は運用上の注意点を示す。</p>
 
 <div class="legend">
+  <span class="legend-item"><strong>アクター:</strong></span>
   <span class="legend-item"><span class="legend-dot" style="background:#0ea5e9"></span>お客様</span>
   <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>営業所（所長・営業マン）</span>
   <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>本社事務（岸・トリガイ・中野）</span>
   <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>セカンド／ジム社員</span>
+</div>
+<div class="legend">
+  <span class="legend-item"><strong>作業カテゴリ:</strong></span>
+  <span class="legend-item"><span class="cat cat-input">⌨入力</span>新規データを生成（手入力）</span>
+  <span class="legend-item"><span class="cat cat-trans">🔁転記</span>別のシート／ソフトへ転記・集計</span>
+  <span class="legend-item"><span class="cat cat-line">🔔LINE</span>LINEグループでの報告・連絡</span>
+  <span class="legend-item"><span class="cat cat-check">📋確認</span>照合・確認・対応</span>
 </div>
 
 <div class="swim">
@@ -225,82 +268,205 @@
   <div class="swim-cell empty"></div>
 
   <!-- 営業所（所長・営業マン） -->
-  <div class="swim-actor">営業所<span class="swim-actor-sub">所長・営業マン<br/>アルバイト</span></div>
+  <div class="swim-actor">営業所<span class="swim-actor-sub">所長・営業マン<br/>アルバイト</span><span class="counters"><span>⌨3</span><span>🔁1</span><span>🔔5</span></span></div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">問い合わせ着信の転記<br/>（名古屋：藤田・岡本）</div><div class="task-where">営業所LINEグループ</div><div class="task-freq">都度／3項目のみ（住所・電話・氏名）</div></div>
-    <div class="task sales"><div class="task-what">所長：担当割り振り指示</div><div class="task-where">営業所LINE</div><div class="task-issue">誰に振ったかの記録はなし</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-line">🔔LINE</span>問い合わせ着信の転記<br/>（名古屋：藤田・岡本）</div><div class="task-where">営業所LINEグループ</div><div class="task-freq">都度／3項目のみ（住所・電話・氏名）</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-line">🔔LINE</span>所長：担当割り振り指示</div><div class="task-where">営業所LINE</div><div class="task-issue">誰に振ったかの記録はなし</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">営業マン：電話で日程調整</div><div class="task-where">個人携帯</div><div class="task-issue">名古屋は結果がLINEに上がらず追跡漏れ</div></div>
-    <div class="task sales"><div class="task-what">現調・見積（手書き）</div><div class="task-where">訪問先／紙</div><div class="task-freq">直行直帰</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-check">📋対応</span>営業マン：電話で日程調整</div><div class="task-where">個人携帯</div><div class="task-issue">名古屋は結果がLINEに上がらず追跡漏れ</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-input">⌨入力</span>現調・見積（手書き）</div><div class="task-where">訪問先／紙</div><div class="task-freq">直行直帰</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">契約書取得・チラシ番号記入</div><div class="task-where">紙契約書</div></div>
-    <div class="task sales"><div class="task-what">アルバイトが契約書を本社へ配送</div><div class="task-where">物理配送</div><div class="task-issue">受取タイミングにばらつき → 入力漏れ</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-input">⌨入力</span>契約書取得・チラシ番号記入</div><div class="task-where">紙契約書</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-check">📋搬送</span>アルバイトが契約書を本社へ配送</div><div class="task-where">物理配送</div><div class="task-issue">受取タイミングにばらつき → 入力漏れ</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">外注手配（注文書 or 口頭）</div><div class="task-where">注文書紙／電話</div><div class="task-issue">注文書フォーマット未統一</div></div>
-    <div class="task sales"><div class="task-what">施工進捗報告</div><div class="task-where">営業所LINEグループ<br/>（経営陣が携帯でリアルタイム確認）</div><div class="task-freq">都度</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-line">🔔LINE</span>外注手配（注文書 or 口頭）</div><div class="task-where">注文書紙／電話</div><div class="task-issue">注文書フォーマット未統一</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-line">🔔LINE</span>施工進捗報告</div><div class="task-where">営業所LINEグループ<br/>（経営陣が携帯でリアルタイム確認）</div><div class="task-freq">都度</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">営業マン：現金集金時「有高票」入力</div><div class="task-where">Excel営業報告シート<br/>（Dropbox共有）</div><div class="task-freq">当日入力</div></div>
-    <div class="task sales"><div class="task-what">請求書発行依頼</div><div class="task-where">作成グループLINE</div><div class="task-freq">工事完了3日前</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-input">⌨入力</span>営業マン：現金集金時「有高票」入力</div><div class="task-where">Excel営業報告シート<br/>（Dropbox共有）</div><div class="task-freq">当日入力</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-line">🔔LINE</span>請求書発行依頼</div><div class="task-where">作成グループLINE</div><div class="task-freq">工事完了3日前</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task sales"><div class="task-what">所長：営業所財布の残高管理<br/>（売上・経費同一財布）</div><div class="task-where">残高管理表Excel</div><div class="task-freq">月次</div></div>
+    <div class="task sales"><div class="task-what"><span class="cat cat-trans">🔁転記</span>所長：営業所財布の残高管理<br/>（売上・経費同一財布）</div><div class="task-where">残高管理表Excel</div><div class="task-freq">月次</div></div>
   </div>
 
   <!-- 本社事務 -->
-  <div class="swim-actor">本社事務<span class="swim-actor-sub">岸えり・トリガイ<br/>中野・matsu</span></div>
+  <div class="swim-actor" style="background:#6d28d9">本社事務<span class="swim-actor-sub">岸えり・トリガイ<br/>中野・matsu</span><span class="counters"><span>⌨5</span><span>🔁5</span><span>🔔3</span><span>📋4</span></span></div>
   <div class="swim-cell">
-    <div class="task office"><div class="task-what">チラシ集計更新</div><div class="task-where">Excel「チラシ集計」<br/>（Dropbox共有）</div><div class="task-freq">毎週月曜／地域・週ごと更新</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-trans">🔁転記</span>チラシ集計更新</div><div class="task-where">Excel「チラシ集計」<br/>（Dropbox共有）</div><div class="task-freq">毎週月曜／地域・週ごと更新</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task office"><div class="task-what">事務経由の問い合わせを<br/>各営業所にLINE送信</div><div class="task-where">事務→営業所LINE</div><div class="task-issue">属人化（matsu氏指摘）／誤送信訂正は別LINEで「間違いでした」運用</div></div>
-  </div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell">
-    <div class="task office"><div class="task-what">① 顧客情報入力</div><div class="task-where">Excel「顧客情報2026」<br/>（契約書到着直後）</div></div>
-    <div class="task office"><div class="task-what">② 顧客データ転記</div><div class="task-where">Excel「顧客データ」<br/>（翌日以降貼付）</div></div>
-    <div class="task office"><div class="task-what">契約書不備の報告</div><div class="task-where">連絡用LINEグループ<br/>「6件報告のうち5件しか来ていない」等</div></div>
-    <div class="task office"><div class="task-what">FAX受信→OCR or 目視訂正</div><div class="task-where">FAX機＋Excel</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-line">🔔LINE</span>事務経由の問い合わせを<br/>各営業所にLINE送信</div><div class="task-where">事務→営業所LINE</div><div class="task-issue">属人化（matsu氏指摘）／誤送信訂正は別LINEで「間違いでした」運用</div></div>
   </div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell">
-    <div class="task office"><div class="task-what">毎朝3時 銀行入金確認</div><div class="task-where">銀行オンライン</div><div class="task-freq">毎日朝</div></div>
-    <div class="task office"><div class="task-what">対象営業所に3段階入金報告</div><div class="task-where">営業所LINE</div></div>
-    <div class="task office"><div class="task-what">有高票と顧客データ突合<br/>→未収を集金済みに変更</div><div class="task-where">Excel顧客データ</div><div class="task-freq">毎朝</div></div>
-    <div class="task office"><div class="task-what">請求書作成・郵送（一部PDF）</div><div class="task-where">Wordor手書き→郵送</div><div class="task-issue">観光目処は担当者しか把握していない</div></div>
-    <div class="task office"><div class="task-what">携帯でLINE報告を確認<br/>（集金状況のリアルタイム把握）</div><div class="task-where">営業所LINE</div><div class="task-freq">随時</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-input">⌨入力</span>① 顧客情報入力</div><div class="task-where">Excel「顧客情報2026」<br/>（契約書到着直後）</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-trans">🔁転記</span>② 顧客データへ貼付（顧客情報→顧客データ）</div><div class="task-where">Excel「顧客データ」<br/>（翌日以降貼付）</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-line">🔔LINE</span>契約書不備の報告</div><div class="task-where">連絡用LINEグループ<br/>「6件報告のうち5件しか来ていない」等</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-input">⌨入力</span>FAX受信→OCR or 目視訂正で入力</div><div class="task-where">FAX機＋Excel</div></div>
+  </div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what"><span class="cat cat-check">📋確認</span>毎朝3時 銀行入金確認</div><div class="task-where">銀行オンライン</div><div class="task-freq">毎日朝</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-line">🔔LINE</span>対象営業所に3段階入金報告</div><div class="task-where">営業所LINE</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-trans">🔁転記</span>有高票と顧客データ突合<br/>→未収を集金済みに変更</div><div class="task-where">Excel顧客データ</div><div class="task-freq">毎朝</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-input">⌨入力</span>請求書作成・郵送（一部PDF）</div><div class="task-where">Wordor手書き→郵送</div><div class="task-issue">観光目処は担当者しか把握していない</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-check">📋確認</span>携帯でLINE報告を確認<br/>（集金状況のリアルタイム把握）</div><div class="task-where">営業所LINE</div><div class="task-freq">随時</div></div>
   </div>
   <div class="swim-cell">
-    <div class="task office"><div class="task-what">集金シート集計</div><div class="task-where">Excel「集金シート」<br/>（集金のあったお客様のみ抽出）</div><div class="task-freq">月次</div></div>
-    <div class="task office"><div class="task-what">財務応援（経理ソフト）に打ち込み</div><div class="task-where">経理ソフト</div><div class="task-freq">集金シートのタイミング</div></div>
-    <div class="task office"><div class="task-what">毎月20日締め</div><div class="task-where">—</div><div class="task-freq">土日絡みは前日入金必要</div></div>
-    <div class="task office"><div class="task-what">繰越管理</div><div class="task-where">口頭／記憶（鳥飼氏が把握）</div><div class="task-freq">月300件中15〜20件繰越<br/>（10件削減可と見立て）</div></div>
-    <div class="task office"><div class="task-what">歩合計算資料作成</div><div class="task-where">Excel顧客データの<br/>丸1・丸2・丸3列を元に集計</div><div class="task-issue">番号付与ルールが口頭慣習依存</div></div>
-    <div class="task office"><div class="task-what">評価・感想列への手入力</div><div class="task-where">Excel顧客データ<br/>（依頼日・請求書締め日を転用）</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-trans">🔁転記</span>集金シート集計</div><div class="task-where">Excel「集金シート」<br/>（集金のあったお客様のみ抽出）</div><div class="task-freq">月次</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-input">⌨入力</span>財務応援（経理ソフト）に打ち込み</div><div class="task-where">経理ソフト</div><div class="task-freq">集金シートのタイミング</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-check">📋確認</span>毎月20日締め</div><div class="task-where">—</div><div class="task-freq">土日絡みは前日入金必要</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-check">📋確認</span>繰越管理</div><div class="task-where">口頭／記憶（鳥飼氏が把握）</div><div class="task-freq">月300件中15〜20件繰越<br/>（10件削減可と見立て）</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-trans">🔁転記</span>歩合計算資料作成</div><div class="task-where">Excel顧客データの<br/>丸1・丸2・丸3列を元に集計</div><div class="task-issue">番号付与ルールが口頭慣習依存</div></div>
+    <div class="task office"><div class="task-what"><span class="cat cat-input">⌨入力</span>評価・感想列への手入力</div><div class="task-where">Excel顧客データ<br/>（依頼日・請求書締め日を転用）</div></div>
   </div>
 
   <!-- セカンド／ジム社員 -->
-  <div class="swim-actor">セカンド／ジム社員<span class="swim-actor-sub">第三者確認担当</span></div>
+  <div class="swim-actor">セカンド／ジム社員<span class="swim-actor-sub">第三者確認担当</span><span class="counters"><span>📋2</span></span></div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell">
-    <div class="task second"><div class="task-what">セカンド確認（排水管・工事2種＋集金フォロー）</div><div class="task-where">電話／訪問</div><div class="task-freq">1日10行程度／2〜3月末で6件前後</div><div class="task-issue">実施有無はLINE遡りでしか確認不能</div></div>
-    <div class="task second"><div class="task-what">18時以降のセカンド取り</div><div class="task-where">同一営業所の上長</div><div class="task-issue">不正リスク（自分で書いた後に自分で取るケース）</div></div>
+    <div class="task second"><div class="task-what"><span class="cat cat-check">📋確認</span>セカンド確認（排水管・工事2種＋集金フォロー）</div><div class="task-where">電話／訪問</div><div class="task-freq">1日10行程度／2〜3月末で6件前後</div><div class="task-issue">実施有無はLINE遡りでしか確認不能</div></div>
+    <div class="task second"><div class="task-what"><span class="cat cat-check">📋確認</span>18時以降のセカンド取り</div><div class="task-where">同一営業所の上長</div><div class="task-issue">不正リスク（自分で書いた後に自分で取るケース）</div></div>
   </div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell empty"></div>
 
 </div>
+</div>
+
+<div class="callout" style="background:#fef2f2; border-left-color:#dc2626;">
+  <strong style="color:#991b1b;">⚠ 本資料のポイント</strong>：本社事務（4名）に<strong>入力5・転記5・LINE3・確認4＝計17作業</strong>が集中している。うち⌨入力・🔁転記で10作業（全体の約6割）が Excel 5種＋経理ソフト＋LINEの間を手動で行き来している状態。営業所側は LINE報告5・入力3・転記1＝9作業で、<strong>LINE報告5件すべてが最終的に事務の転記作業を発生させている</strong>。
+</div>
+
+<div class="workload">
+  <h3>💼 アクター別 作業量サマリー（スイムレーン集計）</h3>
+  <div class="workload-grid">
+
+    <div class="workload-actor">本社事務（4名）</div>
+    <div class="workload-bars">
+      <div class="workload-bar bar-input" style="flex: 5;">⌨入力 5</div>
+      <div class="workload-bar bar-trans" style="flex: 5;">🔁転記 5</div>
+      <div class="workload-bar bar-line"  style="flex: 3;">🔔LINE 3</div>
+      <div class="workload-bar bar-check" style="flex: 4;">📋確認 4</div>
+    </div>
+    <div class="workload-total">17</div>
+
+    <div class="workload-actor">営業所（所長・営業マン）</div>
+    <div class="workload-bars">
+      <div class="workload-bar bar-input" style="flex: 3;">⌨入力 3</div>
+      <div class="workload-bar bar-trans" style="flex: 1;">🔁 1</div>
+      <div class="workload-bar bar-line"  style="flex: 5;">🔔LINE 5</div>
+      <div class="workload-bar bar-check" style="flex: 2;">📋対応 2</div>
+    </div>
+    <div class="workload-total">11</div>
+
+    <div class="workload-actor">セカンド／ジム社員</div>
+    <div class="workload-bars">
+      <div class="workload-bar bar-check" style="flex: 2;">📋確認 2</div>
+      <div class="workload-bar" style="flex: 15; background:transparent;"></div>
+    </div>
+    <div class="workload-total">2</div>
+
+  </div>
+  <div class="workload-legend">
+    <span><i class="bar-input"></i>⌨入力</span>
+    <span><i class="bar-trans"></i>🔁転記</span>
+    <span><i class="bar-line"></i>🔔LINE報告</span>
+    <span><i class="bar-check"></i>📋確認</span>
+    <span style="color:#dc2626; font-weight:600;">→ 本社事務の入力＋転記は10作業、うち Excel間の転記が 5 作業連鎖している</span>
+  </div>
+</div>
+
+<div class="linemap">
+  <h3>🔔 LINE チャネル地図（誰が・どこに・何を投げているか）</h3>
+  <div class="linemap-grid">
+    <div class="line-ch">
+      <div class="ch-name">営業所LINEグループ（各所）</div>
+      <div class="ch-flow">営業マン → 営業所</div>
+      <div class="ch-flow">事務 → 営業所（問合せ転送）</div>
+      <div class="ch-flow">事務 → 営業所（3段階入金報告）</div>
+      <div class="ch-flow">所長 → 営業マン（担当割り振り）</div>
+      <div class="ch-purpose">※ 経営陣が携帯でリアルタイム確認</div>
+    </div>
+    <div class="line-ch">
+      <div class="ch-name">連絡用LINEグループ</div>
+      <div class="ch-flow">事務 → 営業（契約書不備）</div>
+      <div class="ch-purpose">例：「6件報告のうち5件しか来ていない」</div>
+    </div>
+    <div class="line-ch">
+      <div class="ch-name">作成グループLINE</div>
+      <div class="ch-flow">営業マン → 事務（請求書発行依頼）</div>
+      <div class="ch-purpose">工事完了3日前に依頼</div>
+    </div>
+    <div class="line-ch">
+      <div class="ch-name">外注手配連絡</div>
+      <div class="ch-flow">営業マン → 外注業者</div>
+      <div class="ch-purpose">注文書紙 or 口頭（フォーマット未統一）</div>
+    </div>
+    <div class="line-ch">
+      <div class="ch-name">施工進捗LINE</div>
+      <div class="ch-flow">営業マン → 営業所LINE</div>
+      <div class="ch-purpose">都度／経営陣の携帯確認用</div>
+    </div>
+    <div class="line-ch" style="border-color:#dc2626; background:#fef2f2;">
+      <div class="ch-name" style="color:#991b1b;">⚠ 誤送信訂正LINE</div>
+      <div class="ch-flow">事務 → 正しい営業所</div>
+      <div class="ch-purpose">「すいません、これ間違いでした」運用（matsu氏指摘：長期社員もどこに投げるか分からない）</div>
+    </div>
+  </div>
 </div>
 
 <div class="callout">
   <strong>データ基盤の全体像</strong>：<strong>LINEグループ</strong>（営業所ごと／連絡用／作成用／事務↔営業所／経営↔営業所 …乱立） ＋ <strong>Excel 5種</strong>（顧客情報2026・顧客データ・集金シート・営業報告シート・外注費管理表） ＋ <strong>Dropbox</strong>（Excel共有と契約書PDF） ＋ <strong>FAX</strong> ＋ <strong>紙契約書</strong> ＋ <strong>口頭慣習</strong>（丸1/2/3・含み・工事番号1〜3番・セカンド・確約）
+</div>
+
+<div class="workload">
+  <h3>📥 本社事務の「データが流れ込む入力経路」</h3>
+  <p style="font-size:13px; color:var(--muted); margin-top:0;">事務（岸・トリガイ・中野）へは以下の<strong>6経路</strong>からデータが流れ込み、すべて手作業で Excel 5種＋経理ソフトに入力・転記される。</p>
+  <div class="linemap-grid">
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">① 紙契約書</div>
+      <div class="ch-flow">営業所 → アルバイト配送 → 事務</div>
+      <div class="ch-flow">→ Excel「顧客情報2026」⌨手入力</div>
+      <div class="ch-flow">→ Excel「顧客データ」🔁貼付</div>
+    </div>
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">② FAX</div>
+      <div class="ch-flow">外部 → FAX機 → 事務</div>
+      <div class="ch-flow">→ OCR読込 or 目視訂正 ⌨手入力</div>
+    </div>
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">③ 銀行オンライン</div>
+      <div class="ch-flow">毎朝3時に事務が確認</div>
+      <div class="ch-flow">→ Excel「顧客データ」🔁突合</div>
+      <div class="ch-flow">→ 営業所LINEへ🔔3段階報告</div>
+    </div>
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">④ 営業所LINE（有高票・施工報告）</div>
+      <div class="ch-flow">営業マンがLINE/Excel営業報告シートに投稿</div>
+      <div class="ch-flow">→ 事務が翌朝 顧客データに🔁突合</div>
+      <div class="ch-flow">→ 未収を集金済みに変更</div>
+    </div>
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">⑤ 作成グループLINE（請求依頼）</div>
+      <div class="ch-flow">営業マン → 事務（工事完了3日前）</div>
+      <div class="ch-flow">→ 請求書 ⌨作成 → 郵送</div>
+    </div>
+    <div class="line-ch" style="border-color:#8b5cf6; background:#faf5ff;">
+      <div class="ch-name" style="color:#6d28d9;">⑥ 折込連絡（毎週金曜）</div>
+      <div class="ch-flow">マーケ → 事務</div>
+      <div class="ch-flow">→ Excel「チラシ集計」🔁毎週月曜更新</div>
+    </div>
+  </div>
+  <p style="font-size:12px; color:#dc2626; margin-top:12px; font-weight:600;">→ すべての入力経路が事務 4 名に集約。Salesforce 導入後は①②④⑤ を自動連携 or お客様側入力に切り替え、③⑥ を SF レポートに自動反映することで <strong>事務の⌨入力＋🔁転記 10 作業を大幅に削減</strong>できる。</p>
 </div>
 
 <h3>主要ステップ詳細（実施者・場所・頻度・根拠）</h3>
