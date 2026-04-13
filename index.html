@@ -181,6 +181,47 @@
   .line-ch .ch-flow { color: #44403c; font-size: 11.5px; margin: 2px 0; }
   .line-ch .ch-purpose { color: #57534e; font-size: 11px; margin-top: 4px; font-style: italic; }
 
+  /* === Decision banner === */
+  .decision-banner {
+    background: linear-gradient(135deg, #7c2d12 0%, #991b1b 100%); color: white;
+    padding: 22px 28px; border-radius: 12px; margin: 24px 0 16px;
+    box-shadow: 0 6px 16px rgba(127,29,29,0.3);
+  }
+  .decision-banner .tag { display: inline-block; background: #fbbf24; color: #78350f; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
+  .decision-banner h2 { background: transparent !important; padding: 0; margin: 10px 0 6px; font-size: 22px; color: white; }
+  .decision-banner .sub { font-size: 13px; opacity: 0.9; margin-bottom: 16px; }
+  .decision-cards { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 12px; align-items: stretch; }
+  .decision-card {
+    background: white; color: var(--text); border-radius: 10px; padding: 16px 18px;
+    border-top: 6px solid; position: relative;
+  }
+  .decision-card.opt-a { border-top-color: #dc2626; }
+  .decision-card.opt-b { border-top-color: #2563eb; }
+  .decision-card h3 { margin: 0 0 2px; font-size: 15px; border: none; padding: 0; }
+  .decision-card .target { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+  .decision-card .pros, .decision-card .cons { font-size: 12px; margin: 6px 0; padding-left: 18px; }
+  .decision-card .pros li::marker { content: "✓ "; color: #16a34a; font-weight: 700; }
+  .decision-card .cons li::marker { content: "✗ "; color: #dc2626; font-weight: 700; }
+  .decision-card .pros li, .decision-card .cons li { margin: 3px 0; line-height: 1.5; }
+  .decision-card .pros-label, .decision-card .cons-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 8px; display: block; }
+  .decision-card .pros-label { color: #16a34a; }
+  .decision-card .cons-label { color: #dc2626; }
+  .decision-vs { display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fbbf24; }
+  .decision-note { margin-top: 14px; font-size: 12.5px; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: 6px; }
+  .decision-note strong { color: #fbbf24; }
+
+  /* Highlighted STEP headers/columns */
+  .flow-node.highlight-a { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); }
+  .flow-node.highlight-a::before { content: "⚡本日の論点A"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 2px 10px; border-radius: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; }
+  .flow-node.highlight-b { background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%); }
+  .flow-node.highlight-b::before { content: "⚡本日の論点B"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 2px 10px; border-radius: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; }
+  .swim-head.highlight-a { background: #dc2626; position: relative; }
+  .swim-head.highlight-a::before { content: "⚡論点A"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+  .swim-head.highlight-b { background: #2563eb; position: relative; }
+  .swim-head.highlight-b::before { content: "⚡論点B"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+  .flow-map-inner { padding-top: 10px; }
+  .swim-grid { padding-top: 10px; }
+
   .steplist { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0; margin: 16px 0; overflow: hidden; }
   .steplist-row { display: grid; grid-template-columns: 40px 130px 1fr 200px 130px 80px; gap: 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
   .steplist-row:last-child { border-bottom: none; }
@@ -206,6 +247,52 @@
     <dt>目的</dt><dd>11回のヒアリングで積み上がった点の要求を業務フロー全体に配置し、フェーズ1/2/3の線引きと追加スコープ提案の根拠を揃える</dd>
   </dl>
 </header>
+
+<div class="decision-banner">
+  <span class="tag">本日 2026-04-14 の決裁事項</span>
+  <h2>4月の構築着手ポイントを STEP 2 と STEP 4 のどちらにするか</h2>
+  <div class="sub">事務の入力業務を減らす起点として、<strong>問い合わせ時点のデータ入力（STEP 2）を新オペレーションで作り直す</strong>か、<strong>契約データまわり（STEP 4）から先に着手する</strong>かを今日決めたい。</div>
+  <div class="decision-cards">
+    <div class="decision-card opt-a">
+      <h3>🅰 STEP 2：問い合わせ時入力の新オペレーション構築</h3>
+      <div class="target">対象：公式LINE／電話／チラシQR → お客様入力 or 音声AI自動データ化</div>
+      <span class="pros-label">メリット</span>
+      <ul class="pros">
+        <li>事務の⌨入力＋🔁転記 10作業のうち<strong>上流側を根絶</strong>できる</li>
+        <li>中本氏が挙げた「電話番号・住所の入力ミス頻発」の根本解決</li>
+        <li>お客様自身が入力する設計にすれば事務への流入経路①〜⑥のうち最大チャネルが消える</li>
+        <li>B1・B2・B3・B4 の問い合わせ系 4 課題を一括で潰せる</li>
+      </ul>
+      <span class="cons-label">デメリット</span>
+      <ul class="cons">
+        <li>お客様接点 UI の設計が必要で工数大（1.5〜2ヶ月見込み）</li>
+        <li>公式LINE／フォーム／音声AI の連携設計が前提、技術依存度が高い</li>
+        <li>成果が「事務の楽さ」に出るまで時間がかかる（完成後からでないと効果が出ない）</li>
+      </ul>
+    </div>
+    <div class="decision-vs">VS</div>
+    <div class="decision-card opt-b">
+      <h3>🅱 STEP 4：契約データまわりから着手</h3>
+      <div class="target">対象：Excel「顧客情報2026」「顧客データ」→ Salesforce 移行、契約書電子化検討</div>
+      <span class="pros-label">メリット</span>
+      <ul class="pros">
+        <li>事務（岸）の日常作業に<strong>即日効果</strong>が出る（Excel 2→1 への集約）</li>
+        <li>歩合計算の丸1/2/3 や評価・感想列の再定義を早期に完了できる</li>
+        <li>データ基盤（顧客オブジェクト）が先に整うと、後続の STEP 2 実装も乗せやすい</li>
+        <li>P1 当初契約スコープの中核であり、追加予算交渉が不要</li>
+      </ul>
+      <span class="cons-label">デメリット</span>
+      <ul class="cons">
+        <li>上流の汚いデータ（入力ミス）が残ったまま Salesforce に流入する</li>
+        <li>契約書OCR困難の判定（D1）により方式変更が必要→ 電子契約提案と抱合せ議論になる</li>
+        <li>アルバイト配送ばらつき（D2）は STEP 4 単体では解決しない</li>
+      </ul>
+    </div>
+  </div>
+  <div class="decision-note">
+    <strong>推奨の考え方</strong>：STEP 2 は「発生源対策」、STEP 4 は「下流整流」。どちらも必要だが 4月の限られた期間（要件定義〜構築まで6〜8週）で片方のみを深く作るなら、<strong>事務の負荷削減インパクト</strong>と<strong>他ステップへの波及効果</strong>を軸に判断する。関連箇所を §1（スイムレーン）・§2（課題マッピング）で ⚡マーク付きで強調表示している。
+  </div>
+</div>
 
 <div class="callout">
   <strong>江頭氏の指摘（MTG#11 t=4090〜4115）</strong>：各部の要求が点で積み上がり、議論が深掘りに流れがち。「今どこの話をしているか」を毎回示せる図と、<strong>要求／要件／構築</strong>の線が混ざらないスケジュールが必要 — これに応える資料。
@@ -235,9 +322,9 @@
   <!-- Header row -->
   <div class="swim-head"></div>
   <div class="swim-head"><span class="h-step">PHASE 1</span>集客</div>
-  <div class="swim-head"><span class="h-step">PHASE 2</span>問い合わせ受付</div>
+  <div class="swim-head highlight-a"><span class="h-step">PHASE 2</span>問い合わせ受付</div>
   <div class="swim-head"><span class="h-step">PHASE 3</span>アポ／現調／見積</div>
-  <div class="swim-head"><span class="h-step">PHASE 4</span>契約／契約書処理</div>
+  <div class="swim-head highlight-b"><span class="h-step">PHASE 4</span>契約／契約書処理</div>
   <div class="swim-head"><span class="h-step">PHASE 5</span>セカンド／外注／施工</div>
   <div class="swim-head"><span class="h-step">PHASE 6</span>集金／入金／請求</div>
   <div class="swim-head"><span class="h-step">PHASE 7</span>経理／歩合／繰越</div>
@@ -511,7 +598,7 @@
 
   <!-- 問い合わせ受付 -->
   <div class="flow-col">
-    <div class="flow-node"><span class="node-step">STEP 2</span>問い合わせ受付<span class="node-sub">LINE／電話<br/>公式LINE／チラシ</span></div>
+    <div class="flow-node highlight-a"><span class="node-step">STEP 2</span>問い合わせ受付<span class="node-sub">LINE／電話<br/>公式LINE／チラシ</span></div>
     <div class="flow-issues">
       <div class="issue-card sev-high">
         <div class="issue-head"><span class="issue-id">B1</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
@@ -566,7 +653,7 @@
 
   <!-- 契約 -->
   <div class="flow-col">
-    <div class="flow-node"><span class="node-step">STEP 4</span>契約<span class="node-sub">紙契約書<br/>角メモが重要情報</span></div>
+    <div class="flow-node highlight-b"><span class="node-step">STEP 4</span>契約<span class="node-sub">紙契約書<br/>角メモが重要情報</span></div>
     <div class="flow-issues">
       <div class="issue-card sev-high sev-new">
         <div class="issue-head"><span class="issue-id">D1</span><span class="mini-badge p2">P2</span></div>
