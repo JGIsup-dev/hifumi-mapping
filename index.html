@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>一二三様 Salesforce導入 — 全体像マッピング</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --p1: #2563eb; --p2: #ea580c; --p3: #9333ea; --out: #64748b;
+    --bg: #fafaf9; --card: #ffffff; --border: #e7e5e4; --text: #1c1917; --muted: #57534e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 1200px; margin: 0 auto; padding: 32px 24px; line-height: 1.7;
+  }
+  header { border-bottom: 3px solid var(--text); padding-bottom: 16px; margin-bottom: 32px; }
+  h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .meta { color: var(--muted); font-size: 13px; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; max-width: 720px; }
+  .meta dt { font-weight: 600; }
+  .meta dd { margin: 0; }
+  h2 { font-size: 22px; margin: 48px 0 16px; padding: 8px 14px; background: var(--text); color: white; border-radius: 4px; }
+  h3 { font-size: 17px; margin: 24px 0 12px; color: var(--text); border-left: 4px solid var(--text); padding-left: 10px; }
+  p { margin: 8px 0; }
+  .callout { background: #fef3c7; border-left: 4px solid #d97706; padding: 12px 16px; border-radius: 4px; margin: 16px 0; font-size: 14px; }
+  .callout strong { color: #92400e; }
+  .mermaid-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 16px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  th { background: #f5f5f4; text-align: left; padding: 10px 12px; font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td.idx { font-weight: 700; color: var(--muted); white-space: nowrap; font-family: "SF Mono", Menlo, monospace; }
+  td.source { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: white; white-space: nowrap; }
+  .badge-p1 { background: var(--p1); }
+  .badge-p2 { background: var(--p2); }
+  .badge-p3 { background: var(--p3); }
+  .badge-out { background: var(--out); }
+  .badge-mix { background: linear-gradient(90deg, var(--p1) 50%, var(--p2) 50%); }
+  .scope-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
+  .scope-card { background: var(--card); border: 1px solid var(--border); border-left-width: 6px; border-radius: 6px; padding: 14px 16px; }
+  .scope-card.p1 { border-left-color: var(--p1); }
+  .scope-card.p2 { border-left-color: var(--p2); }
+  .scope-card.p3 { border-left-color: var(--p3); }
+  .scope-card.out { border-left-color: var(--out); }
+  .scope-card h4 { margin: 0 0 8px; font-size: 14px; }
+  .scope-card ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+  .scope-card li { margin: 3px 0; }
+  .phases { display: grid; grid-template-columns: 180px 200px 1fr 1fr; gap: 0; margin: 12px 0; font-size: 13px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .phases > div { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .phases .h { background: #f5f5f4; font-weight: 600; }
+  .phases > div:nth-last-child(-n+4) { border-bottom: none; }
+  .step-list { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; margin: 12px 0; }
+  .step-list ol { margin: 0; padding-left: 20px; }
+  .step-list li { margin: 8px 0; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+
+  /* === フロー統合マッピング === */
+  .flow-map { margin: 20px 0 8px; overflow-x: auto; padding-bottom: 8px; }
+  .flow-map-inner { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 12px; min-width: 1400px; }
+  .flow-col { display: flex; flex-direction: column; }
+  .flow-node {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: white;
+    padding: 14px 12px; border-radius: 8px 8px 0 0; text-align: center;
+    font-weight: 700; font-size: 14px; position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+  .flow-node .node-step { display: block; font-size: 10px; font-weight: 500; color: #94a3b8; margin-bottom: 2px; letter-spacing: 0.1em; }
+  .flow-node .node-sub { display: block; font-size: 11px; font-weight: 400; color: #cbd5e1; margin-top: 4px; line-height: 1.4; }
+  .flow-node::after {
+    content: "▶"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+    color: #1e293b; font-size: 14px; z-index: 2; line-height: 1;
+  }
+  .flow-col:last-child .flow-node::after { content: ""; }
+  .flow-issues {
+    flex: 1; background: #f8fafc; border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .issue-card {
+    background: white; border-radius: 6px; padding: 8px 10px;
+    font-size: 12px; line-height: 1.5; border-left: 3px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .issue-card.sev-high { border-left-color: #dc2626; }
+  .issue-card.sev-mid { border-left-color: #d97706; }
+  .issue-card.sev-low { border-left-color: #16a34a; }
+  .issue-card.sev-new { border-left-color: #0ea5e9; background: #f0f9ff; }
+  .issue-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
+  .issue-id { font-family: "SF Mono", Menlo, monospace; font-weight: 700; font-size: 11px; color: #475569; }
+  .issue-body { color: #334155; font-size: 12px; }
+  .issue-meta { margin-top: 4px; font-size: 10.5px; color: #94a3b8; display: flex; gap: 8px; flex-wrap: wrap; }
+  .issue-solution { margin-top: 4px; font-size: 11px; color: #166534; background: #f0fdf4; padding: 4px 6px; border-radius: 3px; }
+  .mini-badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 9.5px; font-weight: 700; color: white; }
+  .mini-badge.p1 { background: var(--p1); }
+  .mini-badge.p2 { background: var(--p2); }
+  .mini-badge.p3 { background: var(--p3); }
+  .mini-badge.out { background: var(--out); }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 12px 0 8px; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .cross-section { background: var(--card); border: 1px solid var(--border); border-left: 6px solid #64748b; border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+  .cross-section h4 { margin: 0 0 10px; font-size: 14px; color: #475569; }
+  .cross-issues { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+
+  @media print { body { max-width: none; } .mermaid-wrap { break-inside: avoid; } table { break-inside: avoid; } .flow-map-inner { min-width: 100%; grid-auto-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>一二三様 Salesforce導入 — 全体像マッピング</h1>
+  <dl class="meta">
+    <dt>作成日</dt><dd>2026-04-13（社内MTG 向け v1）</dd>
+    <dt>作成者</dt><dd>千葉晨太郎（UDLR）</dd>
+    <dt>共有先</dt><dd>江頭伸太郎（shintech）／ 4月14日 14時 定例で一二三様に共有予定</dd>
+    <dt>目的</dt><dd>11回のヒアリングで積み上がった点の要求を業務フロー全体に配置し、フェーズ1/2/3の線引きと追加スコープ提案の根拠を揃える</dd>
+  </dl>
+</header>
+
+<div class="callout">
+  <strong>江頭氏の指摘（MTG#11 t=4090〜4115）</strong>：各部の要求が点で積み上がり、議論が深掘りに流れがち。「今どこの話をしているか」を毎回示せる図と、<strong>要求／要件／構築</strong>の線が混ざらないスケジュールが必要 — これに応える資料。
+</div>
+
+<h2>1. 業務フロー × 課題マッピング（AS-IS）</h2>
+<p>鳥飼氏把握のルールをベースに MTG#5・#6・#7・#8 で確認した全社共通の大枠フロー。<strong>各ステップの真下に、そのステップで発生している課題を配置</strong>。課題カードの左縁色で深刻度、右上バッジでスコープ区分を表現。</p>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#dc2626"></span>深刻度：高</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#d97706"></span>中</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#16a34a"></span>低</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#0ea5e9"></span>新体制で追加判明</span>
+  <span class="legend-item"><span class="mini-badge p1">P1</span>当初契約</span>
+  <span class="legend-item"><span class="mini-badge p2">P2</span>追加提案</span>
+  <span class="legend-item"><span class="mini-badge p3">P3</span>将来</span>
+</div>
+
+<div class="flow-map">
+<div class="flow-map-inner">
+
+  <!-- 集客 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 1</span>集客<span class="node-sub">TVCM／指名検索<br/>リクルータ</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-low">
+        <div class="issue-head"><span class="issue-id">A1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">TVCM／指名検索の効果計測（CPA 7.4万、指名検索3.5倍）が継続モニタリングできない</div>
+        <div class="issue-solution">→ Salesforceダッシュボードに流入チャネル別KPI</div>
+        <div class="issue-meta"><span>MTG#2</span></div>
+      </div>
+      <div class="issue-card sev-low">
+        <div class="issue-head"><span class="issue-id">A2</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">インフルエンサー（村重杏奈氏）起用の効果検証ができない</div>
+        <div class="issue-solution">→ 流入経路タグで分類</div>
+        <div class="issue-meta"><span>MTG#2</span></div>
+      </div>
+      <div class="issue-card sev-low">
+        <div class="issue-head"><span class="issue-id">A3</span><span class="mini-badge p3">P3</span></div>
+        <div class="issue-body">リクルーター承諾率制度の数値管理が未整備</div>
+        <div class="issue-meta"><span>MTG#2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問い合わせ受付 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 2</span>問い合わせ受付<span class="node-sub">LINE／電話<br/>公式LINE／チラシ</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-high">
+        <div class="issue-head"><span class="issue-id">B1</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body"><strong>入り口が分散</strong> — LINE／電話／チラシ経由フォームが混在、事務受付経由と営業直通もバラバラ</div>
+        <div class="issue-solution">→ 公式LINE→フォーム→SF自動連携＋Zoom Phone CTI起票</div>
+        <div class="issue-meta"><span>MTG#6・#7・#11</span></div>
+      </div>
+      <div class="issue-card sev-high sev-new">
+        <div class="issue-head"><span class="issue-id">B2</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body"><strong>顧客情報の入力ミス頻発</strong> — 電話番号・住所の誤りが営業所に流れる（中本氏指摘）</div>
+        <div class="issue-solution">→ ①Zoom Phone AI自動データ化 ②録音遡り ③お客様自身のフォーム入力</div>
+        <div class="issue-meta"><span>MTG#11（中本 t=1996〜）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">B3</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">夕方以降の折返しが「繋がらない→後回し→漏れ」で全国的に発生</div>
+        <div class="issue-solution">→ 未対応リストをSF可視化＋エスカレーション</div>
+        <div class="issue-meta"><span>MTG#6（鳥飼 t=1512）</span></div>
+      </div>
+      <div class="issue-card sev-mid sev-new">
+        <div class="issue-head"><span class="issue-id">B4</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">事務が全件受付→営業所展開する工数が大きく属人化（matsu氏指摘）</div>
+        <div class="issue-solution">→ 自動振り分けルール</div>
+        <div class="issue-meta"><span>MTG#11（matsu t=1522）</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 初回アポ／現調／見積 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 3</span>初回アポ／現調／見積<span class="node-sub">営業マン直行直帰<br/>手書き見積</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-high">
+        <div class="issue-head"><span class="issue-id">C1</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body">日程調整の追跡漏れ「電話したっけ？まだだっけ？」</div>
+        <div class="issue-solution">→ 未読／済み管理画面で可視化</div>
+        <div class="issue-meta"><span>MTG#6（鳥飼 t=1159）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">C2</span><span class="mini-badge out">要件見直し</span></div>
+        <div class="issue-body">直行直帰でモバイル入力に実態として触れない可能性</div>
+        <div class="issue-solution">→ モバイルUI要件の見直し</div>
+        <div class="issue-meta"><span>MTG#9（千葉 t=2228）</span></div>
+      </div>
+      <div class="issue-card sev-low">
+        <div class="issue-head"><span class="issue-id">C3</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">GPS／位置情報連携によるアポ記録（実装可否調査中）</div>
+        <div class="issue-meta"><span>MTG#5 宿題</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 契約 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 4</span>契約<span class="node-sub">紙契約書<br/>角メモが重要情報</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-high sev-new">
+        <div class="issue-head"><span class="issue-id">D1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body"><strong>契約書OCR困難</strong> — 角のメモ書き（重要情報）まで読み取れない</div>
+        <div class="issue-solution">→ 方式変更：OCR → 電子契約化で提案</div>
+        <div class="issue-meta"><span>MTG#11（千葉 t=3527〜）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">D2</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body">アルバイトが契約書を受け取るタイミングにバラつき→入力漏れ</div>
+        <div class="issue-solution">→ 契約成立時点で事務登録</div>
+        <div class="issue-meta"><span>MTG#8</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">D3</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">PDFバトラー連携で契約書データを自動抽出（D1と統合再設計）</div>
+        <div class="issue-meta"><span>MTG#9</span></div>
+      </div>
+      <div class="issue-card sev-high">
+        <div class="issue-head"><span class="issue-id">F3</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body"><strong>セカンド確認の証跡不在</strong> — 実施有無がLINE遡りでしか確認不能</div>
+        <div class="issue-solution">→ セカンドフィールドをSF必須化</div>
+        <div class="issue-meta"><span>MTG#7（岸 t=1263）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">F4</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">18時以降のセカンド不正リスク（自分で書いた後に同一営業所上長を取る）</div>
+        <div class="issue-solution">→ 運用ルール＋システム制御の両面検討</div>
+        <div class="issue-meta"><span>MTG#7（トリガイ t=1547）</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 外注手配／施工 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 5</span>外注手配／施工<span class="node-sub">注文書／口頭<br/>LINE報告</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">E1</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">注文書フォーマット未統一、口頭での外注手配がある</div>
+        <div class="issue-solution">→ 注文書強制化（方針合意済、項目設計未）</div>
+        <div class="issue-meta"><span>MTG#5</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">E2</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body">LINE報告が散在、テンプレ化されていない</div>
+        <div class="issue-solution">→ 施工進捗オブジェクトへ直接入力に一本化</div>
+        <div class="issue-meta"><span>MTG#5・#6</span></div>
+      </div>
+      <div class="issue-card sev-high sev-new">
+        <div class="issue-head"><span class="issue-id">E3</span><span class="mini-badge out">設計原則</span></div>
+        <div class="issue-body"><strong>旧AndPadが定着せず離脱した前例</strong> — 使い勝手が悪く結局LINEに戻った（石井氏）</div>
+        <div class="issue-solution">→ SF「見ないと見られない」強制設計＋評価制度連動</div>
+        <div class="issue-meta"><span>MTG#11（石井 t=2935）</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 集金／入金 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 6</span>集金／入金<span class="node-sub">現金／振込<br/>目視確認</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-high">
+        <div class="issue-head"><span class="issue-id">F1</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body"><strong>入金漏れが目視依存</strong> — 月間300件中15〜20件が繰越（鳥飼見立て10件削減可）</div>
+        <div class="issue-solution">→ 入金漏れレポート（着工3日後未集金リスト）</div>
+        <div class="issue-meta"><span>MTG#5・#7（岸 t=2550）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">F2</span><span class="mini-badge p2">P2</span></div>
+        <div class="issue-body">現金集金が担当者任せで本部が把握できない（100万円単位あり）</div>
+        <div class="issue-solution">→ SF制御設計は未着手</div>
+        <div class="issue-meta"><span>MTG#5（t=3945〜）</span></div>
+      </div>
+      <div class="issue-card sev-high">
+        <div class="issue-head"><span class="issue-id">F5</span><span class="mini-badge out">要件定義</span></div>
+        <div class="issue-body"><strong>歩合計算の番号列（丸1／丸2／丸3）が口頭慣習依存</strong></div>
+        <div class="issue-solution">→ SFオブジェクト再定義が必要、着手未</div>
+        <div class="issue-meta"><span>MTG#8</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- リピート／紹介 -->
+  <div class="flow-col">
+    <div class="flow-node"><span class="node-step">STEP 7</span>リピート／紹介<span class="node-sub">再架電<br/>経営可視化</span></div>
+    <div class="flow-issues">
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">G1</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body">経営ダッシュボード（売上・営業所別・案件種別）が未整備</div>
+        <div class="issue-solution">→ P1データが揃い次第構築</div>
+        <div class="issue-meta"><span>MTG#11（千葉 t=2500）</span></div>
+      </div>
+      <div class="issue-card sev-mid">
+        <div class="issue-head"><span class="issue-id">G2</span><span class="mini-badge p1">P1</span></div>
+        <div class="issue-body">リピート／紹介の顧客履歴を追跡できない</div>
+        <div class="issue-solution">→ 顧客オブジェクト設計に内包</div>
+        <div class="issue-meta"><span>MTG#9</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="cross-section">
+  <h4>🔀 横断／基盤的課題（特定ステップに帰属しない）</h4>
+  <div class="cross-issues">
+    <div class="issue-card sev-high sev-new">
+      <div class="issue-head"><span class="issue-id">G3</span><span class="mini-badge p2">P2</span></div>
+      <div class="issue-body"><strong>LINEグループ増殖</strong> — 長期社員も「どのグループに何を書けばいいか」分からない（matsu氏）</div>
+      <div class="issue-solution">→ SFへの情報集約、フィード機能活用</div>
+      <div class="issue-meta"><span>MTG#11（matsu t=2808）</span></div>
+    </div>
+    <div class="issue-card sev-high">
+      <div class="issue-head"><span class="issue-id">H5</span><span class="mini-badge p1">P1前提</span></div>
+      <div class="issue-body"><strong>現行データ整備レベルが低い</strong> — 移行前クレンジング方針が未定（千葉氏）</div>
+      <div class="issue-meta"><span>MTG#9（千葉 t=148）</span></div>
+    </div>
+    <div class="issue-card sev-mid sev-new">
+      <div class="issue-head"><span class="issue-id">H1</span><span class="mini-badge p2">P2</span></div>
+      <div class="issue-body">有給奨励日の全社停止でシステム連動を考慮する必要（鳥飼氏）</div>
+      <div class="issue-meta"><span>MTG#11（鳥飼 t=1087）</span></div>
+    </div>
+    <div class="issue-card sev-mid">
+      <div class="issue-head"><span class="issue-id">H2</span><span class="mini-badge p2">P2</span></div>
+      <div class="issue-body">ズームフォンCTI EOL（2028-02-28）対応 → SF Voice移行計画未策定</div>
+      <div class="issue-meta"><span>MTG#9</span></div>
+    </div>
+    <div class="issue-card sev-mid sev-new">
+      <div class="issue-head"><span class="issue-id">H4</span><span class="mini-badge out">運用施策</span></div>
+      <div class="issue-body">評価制度にSF浸透率組込（3ヶ月・6ヶ月ターム）— 渡邊氏決定済</div>
+      <div class="issue-solution">→ 組織側の定着メカニズムとして既に仕込済</div>
+      <div class="issue-meta"><span>MTG#11（渡邊 t=3039）</span></div>
+    </div>
+    <div class="issue-card sev-low">
+      <div class="issue-head"><span class="issue-id">H3</span><span class="mini-badge out">対象外</span></div>
+      <div class="issue-body">池袋所長／小野さん配置（人事案件・渡邊氏管轄）</div>
+      <div class="issue-meta"><span>MTG#1</span></div>
+    </div>
+  </div>
+</div>
+
+<p style="font-size:13px; color:var(--muted); margin-top:16px;"><strong>データ基盤</strong>： LINE（各営業所グループ）／ Excel 5種（顧客情報2026・顧客データ・集金シート・営業報告シート・外注費管理表）／ Dropbox（契約書PDF）／ 口頭慣習<br/>
+<strong>規模</strong>：月間約300件 ／ 繰越15〜20件 ／ ジム事務（岸えり・トリガイ・中野・matsu）＋ 各営業所長</p>
+
+<h2>2. 要求・課題マッピング（点 → 線）</h2>
+<p>各業務ノードに、これまでのMTGで挙がった課題・要求を配置する。右端の「スコープ」列で当初契約範囲（<span class="badge badge-p1">P1</span>）／追加提案候補（<span class="badge badge-p2">P2</span>）／将来（<span class="badge badge-p3">P3</span>）／対象外（<span class="badge badge-out">外</span>）を区別。</p>
+
+<h3>2-1. 集客</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">A1</td><td>TVCM／指名検索の効果計測（CPA 7.4万円、指名検索3.5倍）を継続モニタリング</td><td class="source">MTG#2</td><td>Salesforceダッシュボードに流入チャネル別KPI</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">A2</td><td>インフルエンサー起用（村重杏奈氏）の効果検証</td><td class="source">MTG#2</td><td>流入経路タグで分類可能に</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">A3</td><td>リクルーター承諾率制度の数値管理</td><td class="source">MTG#2</td><td>人事評価と連動（渡邊氏管轄）</td><td><span class="badge badge-p3">P3</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-2. 問い合わせ受付</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">B1</td><td>問い合わせの入り口が LINE／電話／チラシ経由フォームで分散、事務受付経由と営業直通が混在</td><td class="source">MTG#6・#7・#11</td><td>公式LINE→簡易フォーム→Salesforce自動連携（千葉 t=2169）／ Zoom Phone CTI で電話も自動起票</td><td><span class="badge badge-mix">P1＋P2</span></td></tr>
+    <tr><td class="idx">B2</td><td>顧客情報の入力ミス頻発（電話番号・住所）→営業所に誤データが流れる</td><td class="source">MTG#11（中本 t=1996〜2121）・#8</td><td>① Zoom Phone の AI 音声→自動データ化／② 録音遡り確認／③ お客様自身のフォーム入力</td><td><span class="badge badge-p1">P1</span> ①② ＋ <span class="badge badge-p2">P2</span> ③</td></tr>
+    <tr><td class="idx">B3</td><td>夕方以降の折返しが「繋がらない→後回し→漏れ」で全国的に発生</td><td class="source">MTG#6（鳥飼 t=1512）</td><td>未対応リストをSalesforceで可視化、エスカレーション</td><td><span class="badge badge-mix">P1＋P2</span></td></tr>
+    <tr><td class="idx">B4</td><td>事務が全件受け取り→営業所展開する工数が大きく属人化</td><td class="source">MTG#11（matsu t=1522）</td><td>自動振り分けルール</td><td><span class="badge badge-p2">P2</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-3. 初回アポ／現調／見積</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">C1</td><td>日程調整の追跡漏れ（「電話したっけ？まだだっけ？」）</td><td class="source">MTG#6（鳥飼 t=1159）</td><td>未読／済み管理画面で可視化</td><td><span class="badge badge-p1">P1</span></td></tr>
+    <tr><td class="idx">C2</td><td>営業マンが直行直帰で現場対応、モバイル入力想定箇所に実態として触れない可能性</td><td class="source">MTG#9（千葉 t=2228）</td><td>モバイル UI の要件見直し</td><td><span class="badge badge-out">要件見直し</span></td></tr>
+    <tr><td class="idx">C3</td><td>GPS／位置情報連携によるアポ記録</td><td class="source">MTG#5（宿題 t=2323〜2416）</td><td>千葉調査中、結果未共有</td><td><span class="badge badge-p2">P2</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-4. 契約</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">D1</td><td>契約書は紙ベース＋角のメモ書きが重要情報を含む</td><td class="source">MTG#11（千葉 t=3527〜3561）</td><td>OCR転記は困難 → <strong>電子契約化に切替提案</strong></td><td><span class="badge badge-p2">P2（方式変更）</span></td></tr>
+    <tr><td class="idx">D2</td><td>アルバイトが契約書を受け取るタイミングにバラつき→入力漏れ</td><td class="source">MTG#8</td><td>契約成立時点で事務登録</td><td><span class="badge badge-p1">P1</span></td></tr>
+    <tr><td class="idx">D3</td><td>PDFバトラー連携で契約書データを自動抽出</td><td class="source">MTG#9</td><td>D1と統合再設計</td><td><span class="badge badge-mix">P1→P2</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-5. 外注手配／施工</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">E1</td><td>注文書フォーマット未統一、口頭での外注手配がある</td><td class="source">MTG#5</td><td>注文書強制化（方針合意済、項目設計未）</td><td><span class="badge badge-mix">P1／P2</span></td></tr>
+    <tr><td class="idx">E2</td><td>LINE報告のテンプレ化、システム直接入力に一本化</td><td class="source">MTG#5・#6</td><td>施工進捗オブジェクトへの直接入力</td><td><span class="badge badge-p1">P1</span></td></tr>
+    <tr><td class="idx">E3</td><td>施工管理ツール（旧AndPad）が定着せず離脱した経緯</td><td class="source">MTG#11（石井 t=2935）</td><td>Salesforce「見ないと見られない」強制設計</td><td><span class="badge badge-out">設計原則</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-6. 集金／入金</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">F1</td><td>入金漏れが目視依存。月間300件中15〜20件が繰越</td><td class="source">MTG#5・#7（岸 t=2550）</td><td><strong>入金漏れレポート</strong>（着工3日後未集金リスト）</td><td><span class="badge badge-p1">P1（既決）</span></td></tr>
+    <tr><td class="idx">F2</td><td>現金集金が担当者任せで本部が把握できない（100万円単位あり）</td><td class="source">MTG#5（t=3945〜4025）</td><td>Salesforce制御設計は未着手</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">F3</td><td>セカンド確認の証跡が LINE 遡りしか手段なし</td><td class="source">MTG#7（岸 t=1263）</td><td>セカンド確認フィールドを Salesforce で必須化</td><td><span class="badge badge-p1">P1</span></td></tr>
+    <tr><td class="idx">F4</td><td>18時以降のセカンド不正リスク（自分で書いた後に同一営業所の上長を取る）</td><td class="source">MTG#7（トリガイ t=1547）</td><td>運用ルール＋システム制御、両面未検討</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">F5</td><td>歩合計算用の番号列（丸1／丸2／丸3）が口頭慣習依存</td><td class="source">MTG#8</td><td>Salesforceオブジェクト再定義が必要、着手未</td><td><span class="badge badge-out">要件定義</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-7. リピート／紹介／経営可視化</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">G1</td><td>経営ダッシュボード（売上・営業所別・案件種別）</td><td class="source">MTG#11（千葉 t=2500）</td><td>P1データが揃い次第</td><td><span class="badge badge-p1">P1の延長</span></td></tr>
+    <tr><td class="idx">G2</td><td>リピート／紹介の顧客履歴を Salesforce 上で追跡</td><td class="source">MTG#9</td><td>顧客オブジェクト設計に内包</td><td><span class="badge badge-p1">P1</span></td></tr>
+    <tr><td class="idx">G3</td><td>LINEグループ増殖による情報散逸（長期社員も把握不能）</td><td class="source">MTG#11（matsu t=2808）</td><td>Salesforce への情報集約、フィード機能活用</td><td><span class="badge badge-p2">P2</span></td></tr>
+  </tbody>
+</table>
+
+<h3>2-8. 横断／基盤</h3>
+<table>
+  <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">H1</td><td>有給奨励日の全社停止によるシステム連動の考慮</td><td class="source">MTG#11（鳥飼 t=1087）</td><td>運用カレンダー連動は要確認</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">H2</td><td>ズームフォンCTI EOL（2028-02-28）対応</td><td class="source">MTG#9</td><td>Salesforce Voice 移行計画</td><td><span class="badge badge-p2">P2</span></td></tr>
+    <tr><td class="idx">H3</td><td>池袋所長／小野さん配置</td><td class="source">MTG#1</td><td>プロジェクト外（渡邊氏管轄）</td><td><span class="badge badge-out">対象外</span></td></tr>
+    <tr><td class="idx">H4</td><td>評価制度にSalesforce浸透率組込（3ヶ月・6ヶ月ターム）</td><td class="source">MTG#11（渡邊 t=3039）</td><td>組織側の定着メカニズム</td><td><span class="badge badge-out">運用施策</span></td></tr>
+    <tr><td class="idx">H5</td><td>データクレンジング方針（現行データ整備レベルは低い）</td><td class="source">MTG#9（千葉 t=148）</td><td>移行前クレンジング計画が未定</td><td><span class="badge badge-p1">P1前提</span></td></tr>
+  </tbody>
+</table>
+
+<h2>3. スコープ線引き</h2>
+<div class="scope-grid">
+  <div class="scope-card p1">
+    <h4><span class="badge badge-p1">Phase 1</span> 当初契約スコープ</h4>
+    <p style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">クリーニング／リフォーム案件管理＋入金漏れレポート＋Zoom Phone連携</p>
+    <ul>
+      <li>B1 基盤連携、B2 ①②</li>
+      <li>C1 未読管理、D2 契約時登録、D3 PDF抽出</li>
+      <li>E1 項目設計、E2 直接入力</li>
+      <li>F1 入金漏れレポート、F3 セカンド必須化</li>
+      <li>G1 基盤、G2 顧客履歴</li>
+    </ul>
+  </div>
+  <div class="scope-card p2">
+    <h4><span class="badge badge-p2">Phase 2</span> 追加提案候補（5月中旬後半）</h4>
+    <p style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">当初ヒアリングで点だった課題が詳細化で分解・拡張された部分</p>
+    <ul>
+      <li>B1拡張、B2③、B3運用、B4自動振分</li>
+      <li>D1 契約書電子化（OCR→電子契約）</li>
+      <li>F2 現金集金制御、F4 セカンド不正対策</li>
+      <li>G3 LINE情報集約</li>
+      <li>H1 カレンダー連動、H2 Voice移行</li>
+    </ul>
+  </div>
+  <div class="scope-card p3">
+    <h4><span class="badge badge-p3">Phase 3</span> 将来</h4>
+    <ul>
+      <li>A1〜A3 経営・人事評価連動の高度化</li>
+      <li>C3 GPS／位置情報連携</li>
+      <li>H4 評価制度ダッシュボード連携</li>
+    </ul>
+  </div>
+  <div class="scope-card out">
+    <h4><span class="badge badge-out">対象外</span></h4>
+    <ul>
+      <li>買取事業（リフォーム成功後の別フェーズ）</li>
+      <li>池袋所長／小野さん配置（人事案件）</li>
+      <li>C2 モバイルUI → 要件見直し扱い</li>
+      <li>E3 強制設計・H4 評価制度 → 設計原則／運用施策</li>
+    </ul>
+  </div>
+</div>
+
+<h2>4. フェーズ分割スケジュール</h2>
+<p>江頭氏指摘「要求／要件／構築が混在」への回答。要求定義 → 要件定義 → 構築の線を明示分離する。</p>
+<div class="phases">
+  <div class="h">フェーズ</div><div class="h">期間</div><div class="h">作業区分</div><div class="h">主要アウトプット</div>
+  <div>要求定義</div><div>〜 2026-04 上旬</div><div>各部ヒアリング・AS-IS把握</div><div>本マッピング資料・業務フロー図</div>
+  <div><strong>要件定義（P1）</strong></div><div>2026-04-14 〜 05 中旬</div><div>事務データ移行の要件固め／契約書電子化方式選定／F5再定義</div><div>オブジェクト設計書・移行要件書</div>
+  <div><strong>構築（P1）</strong></div><div>2026-05 中旬 〜 07</div><div>事務側機能→営業側機能→入金レポート</div><div>動く Salesforce 環境（P1範囲）</div>
+  <div><strong>追加スコープ提案（P2）</strong></div><div>2026-05 中旬後半</div><div>Phase 2 提案書・見積</div><div>契約変更提案</div>
+  <div>要件定義・構築（P2）</div><div>2026-06〜</div><div>提案合意後</div><div>Phase 2 成果物</div>
+</div>
+<div class="callout">
+  <strong>予算の組み替え案</strong>：5月ランニング費用発生分を P2 拡張予算に充当できないか（Yusuke氏 t=3488）→ 提案書に反映する。
+</div>
+
+<h2>5. 次回MTG（4月14日 14時）での使い方</h2>
+<div class="step-list">
+<ol>
+  <li><strong>§1 業務フロー図を起点</strong>に「今どこの話をしているか」を毎論点で確認する</li>
+  <li><strong>§2 マッピング表</strong>で各部の要求がどこに紐付くか可視化、漏れがないかを一二三様と相互チェック</li>
+  <li><strong>§3 スコープ線引き</strong>を示し、P1 範囲と P2 候補の存在をこの時点で共有（確定提案は5月中旬後半）</li>
+  <li><strong>§4 フェーズ分割スケジュール</strong>で「当初スケジュールは更新が必要」と段階的に合意形成</li>
+</ol>
+</div>
+<div class="callout">
+  <strong>避けたい展開</strong>：各部の課題の深掘りに入る前に §1 §2 を必ず画面共有。点の議論に入る前に「これは §2-X の話」と位置付ける。
+</div>
+
+<h2>6. 4月13日 社内MTGで決める未確定項目</h2>
+<ul>
+  <li>P1／P2 の最終線引き（本資料の案で妥当か、追加移動はあるか）</li>
+  <li>一二三様への「スケジュール見直し」提示タイミング（4月14日に言うか、5月提案時に言うか）</li>
+  <li>コミュニケーション戦略（追加スコープ提案の切り出し方、費用増の説明ストーリー）</li>
+  <li>資料リンクの再発行・共有先</li>
+</ul>
+
+<h2>付録：根拠MTG一覧</h2>
+<table>
+  <thead><tr><th>#</th><th>日付</th><th>タイトル</th><th>主要情報</th></tr></thead>
+  <tbody>
+    <tr><td class="idx">#1〜#3</td><td class="source">2026-02-09〜10</td><td>全体会議／エリア紹介</td><td>体制・全社KPI</td></tr>
+    <tr><td class="idx">#4</td><td class="source">2026-02-12</td><td>アカウント発行</td><td>構築準備</td></tr>
+    <tr><td class="idx">#5</td><td class="source">2026-02-18</td><td>業務フローヒアリング1</td><td>集客〜入金の骨格</td></tr>
+    <tr><td class="idx">#6</td><td class="source">2026-03-02</td><td>ヒアリング2</td><td>社内用語、追跡漏れ</td></tr>
+    <tr><td class="idx">#7</td><td class="source">2026-03-18</td><td>事務AS-ISヒアリング</td><td>入金・セカンド</td></tr>
+    <tr><td class="idx">#8</td><td class="source">2026-03-24</td><td>Excel5種ウォークスルー</td><td>丸1/2/3慣習</td></tr>
+    <tr><td class="idx">#9</td><td class="source">2026-03-30</td><td>デモ・多者間共有</td><td>方針確定・CTI EOL</td></tr>
+    <tr><td class="idx">#10</td><td class="source">2026-04-08 AM</td><td>アジェンダ共有</td><td>（トランスクリプト未取得）</td></tr>
+    <tr><td class="idx">#11</td><td class="source">2026-04-08 PM</td><td>新体制中間報告</td><td>評価制度組込、フェーズ分割合意</td></tr>
+  </tbody>
+</table>
+
+<footer>
+  tldv-scribe / hifumi project — data/projects/hifumi/mapping.html<br/>
+  根拠：line.md（2026-04-09時点）＋ MTG#11 transcript（69d6e9e24d321f00138d9200）
+</footer>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', themeVariables: { fontFamily: '-apple-system, "Hiragino Kaku Gothic ProN", sans-serif' } });
+</script>
+</body>
+</html>
