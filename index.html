@@ -169,13 +169,13 @@
       <div class="issue-card sev-high">
         <div class="issue-head"><span class="issue-id">B1</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
         <div class="issue-body"><strong>入り口が分散</strong> — LINE／電話／チラシ経由フォームが混在、事務受付経由と営業直通もバラバラ</div>
-        <div class="issue-solution">→ 公式LINE→フォーム→SF自動連携＋Zoom Phone CTI起票</div>
+        <div class="issue-solution">→ 公式LINE→フォーム→SF自動連携で受付経路を集約</div>
         <div class="issue-meta"><span>MTG#6・#7・#11</span></div>
       </div>
       <div class="issue-card sev-high sev-new">
         <div class="issue-head"><span class="issue-id">B2</span><span class="mini-badge p1">P1</span><span class="mini-badge p2">P2</span></div>
         <div class="issue-body"><strong>顧客情報の入力ミス頻発</strong> — 電話番号・住所の誤りが営業所に流れる（中本氏指摘）</div>
-        <div class="issue-solution">→ ①Zoom Phone AI自動データ化 ②録音遡り ③お客様自身のフォーム入力</div>
+        <div class="issue-solution">→ ①録音からのAI自動データ化 ②録音遡り確認 ③お客様自身のフォーム入力</div>
         <div class="issue-meta"><span>MTG#11（中本 t=1996〜）</span></div>
       </div>
       <div class="issue-card sev-mid">
@@ -344,11 +344,6 @@
       <div class="issue-body">有給奨励日の全社停止でシステム連動を考慮する必要（鳥飼氏）</div>
       <div class="issue-meta"><span>MTG#11（鳥飼 t=1087）</span></div>
     </div>
-    <div class="issue-card sev-mid">
-      <div class="issue-head"><span class="issue-id">H2</span><span class="mini-badge p2">P2</span></div>
-      <div class="issue-body">ズームフォンCTI EOL（2028-02-28）対応 → SF Voice移行計画未策定</div>
-      <div class="issue-meta"><span>MTG#9</span></div>
-    </div>
     <div class="issue-card sev-mid sev-new">
       <div class="issue-head"><span class="issue-id">H4</span><span class="mini-badge out">運用施策</span></div>
       <div class="issue-body">評価制度にSF浸透率組込（3ヶ月・6ヶ月ターム）— 渡邊氏決定済</div>
@@ -383,8 +378,8 @@
 <table>
   <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
   <tbody>
-    <tr><td class="idx">B1</td><td>問い合わせの入り口が LINE／電話／チラシ経由フォームで分散、事務受付経由と営業直通が混在</td><td class="source">MTG#6・#7・#11</td><td>公式LINE→簡易フォーム→Salesforce自動連携（千葉 t=2169）／ Zoom Phone CTI で電話も自動起票</td><td><span class="badge badge-mix">P1＋P2</span></td></tr>
-    <tr><td class="idx">B2</td><td>顧客情報の入力ミス頻発（電話番号・住所）→営業所に誤データが流れる</td><td class="source">MTG#11（中本 t=1996〜2121）・#8</td><td>① Zoom Phone の AI 音声→自動データ化／② 録音遡り確認／③ お客様自身のフォーム入力</td><td><span class="badge badge-p1">P1</span> ①② ＋ <span class="badge badge-p2">P2</span> ③</td></tr>
+    <tr><td class="idx">B1</td><td>問い合わせの入り口が LINE／電話／チラシ経由フォームで分散、事務受付経由と営業直通が混在</td><td class="source">MTG#6・#7・#11</td><td>公式LINE→簡易フォーム→Salesforce自動連携（千葉 t=2169）で受付経路を集約</td><td><span class="badge badge-mix">P1＋P2</span></td></tr>
+    <tr><td class="idx">B2</td><td>顧客情報の入力ミス頻発（電話番号・住所）→営業所に誤データが流れる</td><td class="source">MTG#11（中本 t=1996〜2121）・#8</td><td>① 録音からのAI自動データ化／② 録音遡り確認／③ お客様自身のフォーム入力</td><td><span class="badge badge-p1">P1</span> ①② ＋ <span class="badge badge-p2">P2</span> ③</td></tr>
     <tr><td class="idx">B3</td><td>夕方以降の折返しが「繋がらない→後回し→漏れ」で全国的に発生</td><td class="source">MTG#6（鳥飼 t=1512）</td><td>未対応リストをSalesforceで可視化、エスカレーション</td><td><span class="badge badge-mix">P1＋P2</span></td></tr>
     <tr><td class="idx">B4</td><td>事務が全件受け取り→営業所展開する工数が大きく属人化</td><td class="source">MTG#11（matsu t=1522）</td><td>自動振り分けルール</td><td><span class="badge badge-p2">P2</span></td></tr>
   </tbody>
@@ -447,8 +442,7 @@
   <thead><tr><th>#</th><th>課題・要求</th><th>出典</th><th>対応方針</th><th>スコープ</th></tr></thead>
   <tbody>
     <tr><td class="idx">H1</td><td>有給奨励日の全社停止によるシステム連動の考慮</td><td class="source">MTG#11（鳥飼 t=1087）</td><td>運用カレンダー連動は要確認</td><td><span class="badge badge-p2">P2</span></td></tr>
-    <tr><td class="idx">H2</td><td>ズームフォンCTI EOL（2028-02-28）対応</td><td class="source">MTG#9</td><td>Salesforce Voice 移行計画</td><td><span class="badge badge-p2">P2</span></td></tr>
-    <tr><td class="idx">H3</td><td>池袋所長／小野さん配置</td><td class="source">MTG#1</td><td>プロジェクト外（渡邊氏管轄）</td><td><span class="badge badge-out">対象外</span></td></tr>
+<tr><td class="idx">H3</td><td>池袋所長／小野さん配置</td><td class="source">MTG#1</td><td>プロジェクト外（渡邊氏管轄）</td><td><span class="badge badge-out">対象外</span></td></tr>
     <tr><td class="idx">H4</td><td>評価制度にSalesforce浸透率組込（3ヶ月・6ヶ月ターム）</td><td class="source">MTG#11（渡邊 t=3039）</td><td>組織側の定着メカニズム</td><td><span class="badge badge-out">運用施策</span></td></tr>
     <tr><td class="idx">H5</td><td>データクレンジング方針（現行データ整備レベルは低い）</td><td class="source">MTG#9（千葉 t=148）</td><td>移行前クレンジング計画が未定</td><td><span class="badge badge-p1">P1前提</span></td></tr>
   </tbody>
@@ -458,7 +452,7 @@
 <div class="scope-grid">
   <div class="scope-card p1">
     <h4><span class="badge badge-p1">Phase 1</span> 当初契約スコープ</h4>
-    <p style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">クリーニング／リフォーム案件管理＋入金漏れレポート＋Zoom Phone連携</p>
+    <p style="font-size:12.5px; margin:4px 0 8px; color:var(--muted);">クリーニング／リフォーム案件管理＋入金漏れレポート</p>
     <ul>
       <li>B1 基盤連携、B2 ①②</li>
       <li>C1 未読管理、D2 契約時登録、D3 PDF抽出</li>
@@ -475,7 +469,7 @@
       <li>D1 契約書電子化（OCR→電子契約）</li>
       <li>F2 現金集金制御、F4 セカンド不正対策</li>
       <li>G3 LINE情報集約</li>
-      <li>H1 カレンダー連動、H2 Voice移行</li>
+      <li>H1 カレンダー連動</li>
     </ul>
   </div>
   <div class="scope-card p3">
@@ -542,7 +536,7 @@
     <tr><td class="idx">#6</td><td class="source">2026-03-02</td><td>ヒアリング2</td><td>社内用語、追跡漏れ</td></tr>
     <tr><td class="idx">#7</td><td class="source">2026-03-18</td><td>事務AS-ISヒアリング</td><td>入金・セカンド</td></tr>
     <tr><td class="idx">#8</td><td class="source">2026-03-24</td><td>Excel5種ウォークスルー</td><td>丸1/2/3慣習</td></tr>
-    <tr><td class="idx">#9</td><td class="source">2026-03-30</td><td>デモ・多者間共有</td><td>方針確定・CTI EOL</td></tr>
+    <tr><td class="idx">#9</td><td class="source">2026-03-30</td><td>デモ・多者間共有</td><td>方針確定</td></tr>
     <tr><td class="idx">#10</td><td class="source">2026-04-08 AM</td><td>アジェンダ共有</td><td>（トランスクリプト未取得）</td></tr>
     <tr><td class="idx">#11</td><td class="source">2026-04-08 PM</td><td>新体制中間報告</td><td>評価制度組込、フェーズ分割合意</td></tr>
   </tbody>
