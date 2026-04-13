@@ -103,7 +103,61 @@
   .cross-section h4 { margin: 0 0 10px; font-size: 14px; color: #475569; }
   .cross-issues { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
 
-  @media print { body { max-width: none; } .mermaid-wrap { break-inside: avoid; } table { break-inside: avoid; } .flow-map-inner { min-width: 100%; grid-auto-columns: 1fr; } }
+  /* === 詳細業務フロー（スイムレーン） === */
+  .swim { overflow-x: auto; margin: 16px 0; padding-bottom: 8px; }
+  .swim-grid {
+    display: grid;
+    grid-template-columns: 130px repeat(7, minmax(160px, 1fr));
+    min-width: 1400px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .swim-head, .swim-actor {
+    background: #1e293b; color: white;
+    padding: 10px 8px; font-size: 12px; font-weight: 700;
+    text-align: center; display: flex; align-items: center; justify-content: center;
+    border-right: 1px solid #334155; border-bottom: 1px solid #334155;
+  }
+  .swim-head { font-size: 11.5px; letter-spacing: 0.02em; }
+  .swim-head .h-step { display: block; font-size: 9.5px; font-weight: 500; color: #94a3b8; margin-bottom: 2px; letter-spacing: 0.08em; }
+  .swim-actor { background: #334155; text-align: left; padding-left: 12px; justify-content: flex-start; }
+  .swim-actor-sub { display: block; font-size: 10px; font-weight: 400; color: #cbd5e1; margin-top: 2px; }
+  .swim-cell {
+    padding: 8px 6px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    font-size: 11.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;
+    background: #fafaf9;
+  }
+  .swim-cell.empty { background: #f5f5f4; }
+  .task {
+    background: white; border-radius: 4px; padding: 5px 7px;
+    border-left: 3px solid #64748b; box-shadow: 0 1px 1px rgba(0,0,0,0.03);
+  }
+  .task.customer { border-left-color: #0ea5e9; }
+  .task.office { border-left-color: #8b5cf6; }
+  .task.sales { border-left-color: #10b981; }
+  .task.second { border-left-color: #f59e0b; }
+  .task.finance { border-left-color: #ef4444; }
+  .task-what { font-weight: 600; color: #1c1917; font-size: 11.5px; }
+  .task-where { color: #78716c; font-size: 10.5px; margin-top: 2px; }
+  .task-where::before { content: "📍 "; }
+  .task-freq { color: #a16207; font-size: 10px; margin-top: 1px; }
+  .task-issue { color: #dc2626; font-size: 10px; margin-top: 1px; font-weight: 600; }
+  .task-issue::before { content: "⚠ "; }
+
+  .steplist { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0; margin: 16px 0; overflow: hidden; }
+  .steplist-row { display: grid; grid-template-columns: 40px 130px 1fr 200px 130px 80px; gap: 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+  .steplist-row:last-child { border-bottom: none; }
+  .steplist-row.header { background: #f5f5f4; font-weight: 700; font-size: 11.5px; }
+  .steplist-row > div { padding: 8px 10px; border-right: 1px solid var(--border); }
+  .steplist-row > div:last-child { border-right: none; }
+  .steplist-row .num { text-align: center; font-family: "SF Mono", Menlo, monospace; color: var(--muted); font-weight: 700; }
+  .steplist-row .src { color: var(--muted); font-size: 11px; }
+  .chip { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; background: #e7e5e4; color: #44403c; margin-right: 4px; }
+  .chip.hot { background: #fee2e2; color: #991b1b; }
+
+  @media print { body { max-width: none; } .mermaid-wrap { break-inside: avoid; } table { break-inside: avoid; } .flow-map-inner { min-width: 100%; grid-auto-columns: 1fr; } .swim-grid { min-width: 100%; } }
 </style>
 </head>
 <body>
@@ -122,8 +176,227 @@
   <strong>江頭氏の指摘（MTG#11 t=4090〜4115）</strong>：各部の要求が点で積み上がり、議論が深掘りに流れがち。「今どこの話をしているか」を毎回示せる図と、<strong>要求／要件／構築</strong>の線が混ざらないスケジュールが必要 — これに応える資料。
 </div>
 
-<h2>1. 業務フロー × 課題マッピング（AS-IS）</h2>
-<p>鳥飼氏把握のルールをベースに MTG#5・#6・#7・#8 で確認した全社共通の大枠フロー。<strong>各ステップの真下に、そのステップで発生している課題を配置</strong>。課題カードの左縁色で深刻度、右上バッジでスコープ区分を表現。</p>
+<h2>1. 詳細業務フロー（誰が・何を・どこで）</h2>
+<p>MTG#5・#6・#7・#8 のヒアリング内容から、一二三様の現行業務フローを<strong>アクター別スイムレーン</strong>で可視化。各セルはそのアクターがその局面で行う作業で、アイコン 📍 は使用ツール／場所、⚠ は運用上の注意点を示す。</p>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#0ea5e9"></span>お客様</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>営業所（所長・営業マン）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>本社事務（岸・トリガイ・中野）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>セカンド／ジム社員</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>経理・経営</span>
+</div>
+
+<div class="swim">
+<div class="swim-grid">
+
+  <!-- Header row -->
+  <div class="swim-head"></div>
+  <div class="swim-head"><span class="h-step">PHASE 1</span>集客</div>
+  <div class="swim-head"><span class="h-step">PHASE 2</span>問い合わせ受付</div>
+  <div class="swim-head"><span class="h-step">PHASE 3</span>アポ／現調／見積</div>
+  <div class="swim-head"><span class="h-step">PHASE 4</span>契約／契約書処理</div>
+  <div class="swim-head"><span class="h-step">PHASE 5</span>セカンド／外注／施工</div>
+  <div class="swim-head"><span class="h-step">PHASE 6</span>集金／入金／請求</div>
+  <div class="swim-head"><span class="h-step">PHASE 7</span>経理／歩合／繰越</div>
+
+  <!-- お客様 -->
+  <div class="swim-actor">お客様／外部<span class="swim-actor-sub">HP・チラシ読者</span></div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">チラシを受け取る</div><div class="task-where">郵便受け</div><div class="task-freq">週1回配布</div></div>
+    <div class="task customer"><div class="task-what">TVCM／指名検索で認知</div><div class="task-where">TV・Web検索</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">問い合わせ発信</div><div class="task-where">HP／公式LINE／電話／チラシ同梱QR</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">日程調整応答</div><div class="task-where">電話</div></div>
+    <div class="task customer"><div class="task-what">現調・見積を受ける</div><div class="task-where">自宅（訪問対応）</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">契約書サイン</div><div class="task-where">紙契約書（自宅）</div><div class="task-freq">単発</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">セカンド確認に応答</div><div class="task-where">電話／訪問</div></div>
+    <div class="task customer"><div class="task-what">工事を受ける</div><div class="task-where">自宅</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task customer"><div class="task-what">支払い</div><div class="task-where">現金集金 or 銀行振込</div></div>
+  </div>
+  <div class="swim-cell empty"></div>
+
+  <!-- 営業所（所長・営業マン） -->
+  <div class="swim-actor">営業所<span class="swim-actor-sub">所長・営業マン<br/>アルバイト</span></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">問い合わせ着信の転記<br/>（名古屋：藤田・岡本）</div><div class="task-where">営業所LINEグループ</div><div class="task-freq">都度／3項目のみ（住所・電話・氏名）</div></div>
+    <div class="task sales"><div class="task-what">所長：担当割り振り指示</div><div class="task-where">営業所LINE</div><div class="task-issue">誰に振ったかの記録はなし</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">営業マン：電話で日程調整</div><div class="task-where">個人携帯</div><div class="task-issue">名古屋は結果がLINEに上がらず追跡漏れ</div></div>
+    <div class="task sales"><div class="task-what">現調・見積（手書き）</div><div class="task-where">訪問先／紙</div><div class="task-freq">直行直帰</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">契約書取得・チラシ番号記入</div><div class="task-where">紙契約書</div></div>
+    <div class="task sales"><div class="task-what">アルバイトが契約書を本社へ配送</div><div class="task-where">物理配送</div><div class="task-issue">受取タイミングにばらつき → 入力漏れ</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">外注手配（注文書 or 口頭）</div><div class="task-where">注文書紙／電話</div><div class="task-issue">注文書フォーマット未統一</div></div>
+    <div class="task sales"><div class="task-what">施工進捗報告</div><div class="task-where">営業所LINEグループ<br/>（経営陣が携帯でリアルタイム確認）</div><div class="task-freq">都度</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">営業マン：現金集金時「有高票」入力</div><div class="task-where">Excel営業報告シート<br/>（Dropbox共有）</div><div class="task-freq">当日入力</div></div>
+    <div class="task sales"><div class="task-what">請求書発行依頼</div><div class="task-where">作成グループLINE</div><div class="task-freq">工事完了3日前</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task sales"><div class="task-what">所長：営業所財布の残高管理<br/>（売上・経費同一財布）</div><div class="task-where">残高管理表Excel</div><div class="task-freq">月次</div></div>
+  </div>
+
+  <!-- 本社事務 -->
+  <div class="swim-actor">本社事務<span class="swim-actor-sub">岸えり・トリガイ<br/>中野・matsu</span></div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what">チラシ集計更新</div><div class="task-where">Excel「チラシ集計」<br/>（Dropbox共有）</div><div class="task-freq">毎週月曜／地域・週ごと更新</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what">事務経由の問い合わせを<br/>各営業所にLINE送信</div><div class="task-where">事務→営業所LINE</div><div class="task-issue">属人化（matsu氏指摘）／誤送信訂正は別LINEで「間違いでした」運用</div></div>
+  </div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what">① 顧客情報入力</div><div class="task-where">Excel「顧客情報2026」<br/>（契約書到着直後）</div></div>
+    <div class="task office"><div class="task-what">② 顧客データ転記</div><div class="task-where">Excel「顧客データ」<br/>（翌日以降貼付）</div></div>
+    <div class="task office"><div class="task-what">契約書不備の報告</div><div class="task-where">連絡用LINEグループ<br/>「6件報告のうち5件しか来ていない」等</div></div>
+    <div class="task office"><div class="task-what">FAX受信→OCR or 目視訂正</div><div class="task-where">FAX機＋Excel</div></div>
+  </div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what">毎朝3時 銀行入金確認</div><div class="task-where">銀行オンライン</div><div class="task-freq">毎日朝</div></div>
+    <div class="task office"><div class="task-what">対象営業所に3段階入金報告</div><div class="task-where">営業所LINE</div></div>
+    <div class="task office"><div class="task-what">有高票と顧客データ突合<br/>→未収を集金済みに変更</div><div class="task-where">Excel顧客データ</div><div class="task-freq">毎朝</div></div>
+    <div class="task office"><div class="task-what">請求書作成・郵送（一部PDF）</div><div class="task-where">Wordor手書き→郵送</div><div class="task-issue">観光目処は担当者しか把握していない</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task office"><div class="task-what">集金シート集計</div><div class="task-where">Excel「集金シート」<br/>（集金のあったお客様のみ抽出）</div><div class="task-freq">月次</div></div>
+    <div class="task office"><div class="task-what">歩合計算資料作成</div><div class="task-where">Excel顧客データの<br/>丸1・丸2・丸3列を元に集計</div><div class="task-issue">番号付与ルールが口頭慣習依存</div></div>
+    <div class="task office"><div class="task-what">評価・感想列への手入力</div><div class="task-where">Excel顧客データ<br/>（依頼日・請求書締め日を転用）</div></div>
+  </div>
+
+  <!-- セカンド／ジム社員 -->
+  <div class="swim-actor">セカンド／ジム社員<span class="swim-actor-sub">第三者確認担当</span></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task second"><div class="task-what">セカンド確認（排水管・工事2種＋集金フォロー）</div><div class="task-where">電話／訪問</div><div class="task-freq">1日10行程度／2〜3月末で6件前後</div><div class="task-issue">実施有無はLINE遡りでしか確認不能</div></div>
+    <div class="task second"><div class="task-what">18時以降のセカンド取り</div><div class="task-where">同一営業所の上長</div><div class="task-issue">不正リスク（自分で書いた後に自分で取るケース）</div></div>
+  </div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+
+  <!-- 経理・経営 -->
+  <div class="swim-actor">経理・経営<span class="swim-actor-sub">財務応援担当<br/>鳥飼・渡邊（経営）</span></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell empty"></div>
+  <div class="swim-cell">
+    <div class="task finance"><div class="task-what">携帯でLINE報告を確認<br/>（集金状況のリアルタイム把握）</div><div class="task-where">営業所LINE</div><div class="task-freq">随時</div></div>
+  </div>
+  <div class="swim-cell">
+    <div class="task finance"><div class="task-what">財務応援（経理ソフト）に打ち込み</div><div class="task-where">経理ソフト</div><div class="task-freq">集金シートのタイミング</div></div>
+    <div class="task finance"><div class="task-what">毎月20日締め</div><div class="task-where">—</div><div class="task-freq">土日絡みは前日入金必要</div></div>
+    <div class="task finance"><div class="task-what">鳥飼氏：繰越管理</div><div class="task-where">口頭／記憶</div><div class="task-freq">月300件中15〜20件繰越<br/>（10件削減可と見立て）</div></div>
+  </div>
+
+</div>
+</div>
+
+<div class="callout">
+  <strong>データ基盤の全体像</strong>：<strong>LINEグループ</strong>（営業所ごと／連絡用／作成用／事務↔営業所／経営↔営業所 …乱立） ＋ <strong>Excel 5種</strong>（顧客情報2026・顧客データ・集金シート・営業報告シート・外注費管理表） ＋ <strong>Dropbox</strong>（Excel共有と契約書PDF） ＋ <strong>FAX</strong> ＋ <strong>紙契約書</strong> ＋ <strong>口頭慣習</strong>（丸1/2/3・含み・工事番号1〜3番・セカンド・確約）
+</div>
+
+<h3>主要ステップ詳細（実施者・場所・頻度・根拠）</h3>
+<div class="steplist">
+  <div class="steplist-row header">
+    <div>#</div><div>実行者</div><div>作業内容</div><div>使用ツール／場所</div><div>頻度</div><div>根拠</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">1</div><div>お客様</div><div>HP／公式LINE／電話／チラシ経由で問い合わせ</div><div>HP・LINE・電話</div><div>都度</div><div class="src">MTG#6 t=256</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">2</div><div>営業所（藤田・岡本 等）</div><div>着信を営業所LINEグループに転記（住所・電話・氏名の3項目のみ）</div><div>営業所LINEグループ</div><div>都度</div><div class="src">MTG#6 t=562</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">3</div><div>本社事務（岸）</div><div>事務経由の問い合わせを各営業所LINEに直送（誰に振ったかの記録なし）</div><div>事務→営業所LINE</div><div>都度</div><div class="src">MTG#7 t=239</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">4</div><div>営業所所長</div><div>担当営業マンに割り振り指示</div><div>営業所LINE</div><div>即時</div><div class="src">MTG#6</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">5</div><div>営業マン</div><div>電話で日程調整（名古屋では結果がLINEに残らず追跡漏れ）</div><div>個人携帯</div><div>都度</div><div class="src">MTG#6 t=1159 <span class="chip hot">⚠漏れ</span></div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">6</div><div>営業マン</div><div>直行直帰で現調・手書き見積</div><div>訪問先／紙</div><div>都度</div><div class="src">MTG#6</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">7</div><div>営業マン＋お客様</div><div>紙契約書でサイン、チラシ番号チェック、角にメモ書き（重要情報）</div><div>紙契約書</div><div>都度</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">8</div><div>アルバイト</div><div>契約書を営業所→本社事務へ物理配送</div><div>配送（郵送／持参）</div><div>随時</div><div class="src">MTG#8 <span class="chip hot">⚠ばらつき</span></div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">9</div><div>本社事務（岸）</div><div>契約書到着直後に「顧客情報2026」Excelへ入力</div><div>Excel 顧客情報2026</div><div>都度</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">10</div><div>本社事務（岸）</div><div>翌日以降「顧客データ」Excelへ貼付、丸1/丸2/丸3 歩合番号付与</div><div>Excel 顧客データ</div><div>都度</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">11</div><div>本社事務（岸）</div><div>契約書不備を連絡用LINEで報告「6件報告のうち5件しか来ていない」</div><div>連絡用LINEグループ</div><div>随時</div><div class="src">MTG#7 t=1075</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">12</div><div>ジム社員（セカンド）</div><div>第三者確認（排水管／工事2種＋集金フォロー）、1日10行程度</div><div>電話／訪問</div><div>随時</div><div class="src">MTG#7 t=1318 <span class="chip hot">⚠証跡LINE遡り</span></div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">13</div><div>営業マン／所長</div><div>外注業者に注文書 or 口頭で発注</div><div>注文書紙／電話</div><div>都度</div><div class="src">MTG#5 <span class="chip hot">⚠形式未統一</span></div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">14</div><div>営業マン</div><div>施工進捗をLINE報告（経営陣が携帯でリアルタイム確認するため）</div><div>営業所LINEグループ</div><div>都度</div><div class="src">MTG#6 t=2033</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">15</div><div>営業マン</div><div>現金集金時に「有高票」入力</div><div>Excel 営業報告シート（Dropbox）</div><div>当日</div><div class="src">MTG#7 t=2098</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">16</div><div>本社事務（岸）</div><div>毎朝3時に銀行入金確認 → 対象営業所LINEに3段階報告</div><div>銀行オンライン＋営業所LINE</div><div>毎日朝</div><div class="src">MTG#7 t=2098</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">17</div><div>本社事務（岸）</div><div>翌朝、有高票と顧客データを突合、未収→集金済み変更</div><div>Excel 顧客データ</div><div>毎朝</div><div class="src">MTG#7 t=2436</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">18</div><div>営業マン→本社事務（岸・中野）</div><div>作成グループLINEで請求書発行依頼→作成→郵送（一部PDF）</div><div>作成グループLINE＋郵送</div><div>工事完了3日前</div><div class="src">MTG#7 t=1910</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">19</div><div>本社事務（岸）</div><div>「集金シート」に集金のあったお客様のみ抽出（財務応援打込用）</div><div>Excel 集金シート</div><div>月次</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">20</div><div>経理（財務応援担当）</div><div>集金シートをベースに財務応援（経理ソフト）へ打ち込み</div><div>経理ソフト</div><div>随時</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">21</div><div>所長</div><div>営業所財布（売上・経費同一）の残高管理表で月次ゼロ合わせ</div><div>残高管理表Excel</div><div>月次</div><div class="src">MTG#8</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">22</div><div>経理</div><div>毎月20日締め（土日絡みは前日入金必要）</div><div>—</div><div>月1</div><div class="src">MTG#7 t=2317</div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">23</div><div>鳥飼氏</div><div>繰越15〜20件／月の把握（10件は削減可能と見立て）</div><div>口頭／記憶</div><div>月次</div><div class="src">MTG#5 <span class="chip hot">⚠属人化</span></div>
+  </div>
+  <div class="steplist-row">
+    <div class="num">24</div><div>本社事務（岸）</div><div>毎週月曜にチラシ集計Excelを地域・週ごとに更新</div><div>Excel チラシ集計</div><div>毎週月曜</div><div class="src">MTG#7 t=539</div>
+  </div>
+</div>
+
+<h2>2. 業務フロー × 課題マッピング（AS-IS）</h2>
+<p>上記の詳細フローを 7 ステップに圧縮し、<strong>各ステップの真下に、そのステップで発生している課題を配置</strong>。課題カードの左縁色で深刻度、右上バッジでスコープ区分を表現。</p>
 
 <div class="legend">
   <span class="legend-item"><span class="legend-dot" style="background:#dc2626"></span>深刻度：高</span>
@@ -361,7 +634,7 @@
 <p style="font-size:13px; color:var(--muted); margin-top:16px;"><strong>データ基盤</strong>： LINE（各営業所グループ）／ Excel 5種（顧客情報2026・顧客データ・集金シート・営業報告シート・外注費管理表）／ Dropbox（契約書PDF）／ 口頭慣習<br/>
 <strong>規模</strong>：月間約300件 ／ 繰越15〜20件 ／ ジム事務（岸えり・トリガイ・中野・matsu）＋ 各営業所長</p>
 
-<h2>2. 要求・課題マッピング（点 → 線）</h2>
+<h2>3. 要求・課題マッピング（点 → 線）</h2>
 <p>各業務ノードに、これまでのMTGで挙がった課題・要求を配置する。右端の「スコープ」列で当初契約範囲（<span class="badge badge-p1">P1</span>）／追加提案候補（<span class="badge badge-p2">P2</span>）／将来（<span class="badge badge-p3">P3</span>）／対象外（<span class="badge badge-out">外</span>）を区別。</p>
 
 <h3>2-1. 集客</h3>
@@ -448,7 +721,7 @@
   </tbody>
 </table>
 
-<h2>3. スコープ線引き</h2>
+<h2>4. スコープ線引き</h2>
 <div class="scope-grid">
   <div class="scope-card p1">
     <h4><span class="badge badge-p1">Phase 1</span> 当初契約スコープ</h4>
@@ -491,7 +764,7 @@
   </div>
 </div>
 
-<h2>4. フェーズ分割スケジュール</h2>
+<h2>5. フェーズ分割スケジュール</h2>
 <p>江頭氏指摘「要求／要件／構築が混在」への回答。要求定義 → 要件定義 → 構築の線を明示分離する。</p>
 <div class="phases">
   <div class="h">フェーズ</div><div class="h">期間</div><div class="h">作業区分</div><div class="h">主要アウトプット</div>
@@ -505,20 +778,20 @@
   <strong>予算の組み替え案</strong>：5月ランニング費用発生分を P2 拡張予算に充当できないか（Yusuke氏 t=3488）→ 提案書に反映する。
 </div>
 
-<h2>5. 次回MTG（4月14日 14時）での使い方</h2>
+<h2>6. 次回MTG（4月14日 14時）での使い方</h2>
 <div class="step-list">
 <ol>
-  <li><strong>§1 業務フロー図を起点</strong>に「今どこの話をしているか」を毎論点で確認する</li>
-  <li><strong>§2 マッピング表</strong>で各部の要求がどこに紐付くか可視化、漏れがないかを一二三様と相互チェック</li>
-  <li><strong>§3 スコープ線引き</strong>を示し、P1 範囲と P2 候補の存在をこの時点で共有（確定提案は5月中旬後半）</li>
-  <li><strong>§4 フェーズ分割スケジュール</strong>で「当初スケジュールは更新が必要」と段階的に合意形成</li>
+  <li><strong>§1 詳細業務フロー</strong>で「今どの作業・どのアクターの話をしているか」を毎論点で確認する</li>
+  <li><strong>§2 業務フロー × 課題マッピング</strong>で各部の要求がどこに紐付くか可視化、漏れがないかを一二三様と相互チェック</li>
+  <li><strong>§4 スコープ線引き</strong>を示し、P1 範囲と P2 候補の存在をこの時点で共有（確定提案は5月中旬後半）</li>
+  <li><strong>§5 フェーズ分割スケジュール</strong>で「当初スケジュールは更新が必要」と段階的に合意形成</li>
 </ol>
 </div>
 <div class="callout">
-  <strong>避けたい展開</strong>：各部の課題の深掘りに入る前に §1 §2 を必ず画面共有。点の議論に入る前に「これは §2-X の話」と位置付ける。
+  <strong>避けたい展開</strong>：各部の課題の深掘りに入る前に §1 §2 を必ず画面共有。点の議論に入る前に「これは §3-X の話」と位置付ける。
 </div>
 
-<h2>6. 4月13日 社内MTGで決める未確定項目</h2>
+<h2>7. 4月13日 社内MTGで決める未確定項目</h2>
 <ul>
   <li>P1／P2 の最終線引き（本資料の案で妥当か、追加移動はあるか）</li>
   <li>一二三様への「スケジュール見直し」提示タイミング（4月14日に言うか、5月提案時に言うか）</li>
