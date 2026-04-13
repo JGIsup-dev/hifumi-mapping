@@ -184,7 +184,6 @@
   <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>営業所（所長・営業マン）</span>
   <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>本社事務（岸・トリガイ・中野）</span>
   <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>セカンド／ジム社員</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>経理・経営</span>
 </div>
 
 <div class="swim">
@@ -273,9 +272,13 @@
     <div class="task office"><div class="task-what">対象営業所に3段階入金報告</div><div class="task-where">営業所LINE</div></div>
     <div class="task office"><div class="task-what">有高票と顧客データ突合<br/>→未収を集金済みに変更</div><div class="task-where">Excel顧客データ</div><div class="task-freq">毎朝</div></div>
     <div class="task office"><div class="task-what">請求書作成・郵送（一部PDF）</div><div class="task-where">Wordor手書き→郵送</div><div class="task-issue">観光目処は担当者しか把握していない</div></div>
+    <div class="task office"><div class="task-what">携帯でLINE報告を確認<br/>（集金状況のリアルタイム把握）</div><div class="task-where">営業所LINE</div><div class="task-freq">随時</div></div>
   </div>
   <div class="swim-cell">
     <div class="task office"><div class="task-what">集金シート集計</div><div class="task-where">Excel「集金シート」<br/>（集金のあったお客様のみ抽出）</div><div class="task-freq">月次</div></div>
+    <div class="task office"><div class="task-what">財務応援（経理ソフト）に打ち込み</div><div class="task-where">経理ソフト</div><div class="task-freq">集金シートのタイミング</div></div>
+    <div class="task office"><div class="task-what">毎月20日締め</div><div class="task-where">—</div><div class="task-freq">土日絡みは前日入金必要</div></div>
+    <div class="task office"><div class="task-what">繰越管理</div><div class="task-where">口頭／記憶（鳥飼氏が把握）</div><div class="task-freq">月300件中15〜20件繰越<br/>（10件削減可と見立て）</div></div>
     <div class="task office"><div class="task-what">歩合計算資料作成</div><div class="task-where">Excel顧客データの<br/>丸1・丸2・丸3列を元に集計</div><div class="task-issue">番号付与ルールが口頭慣習依存</div></div>
     <div class="task office"><div class="task-what">評価・感想列への手入力</div><div class="task-where">Excel顧客データ<br/>（依頼日・請求書締め日を転用）</div></div>
   </div>
@@ -292,22 +295,6 @@
   </div>
   <div class="swim-cell empty"></div>
   <div class="swim-cell empty"></div>
-
-  <!-- 経理・経営 -->
-  <div class="swim-actor">経理・経営<span class="swim-actor-sub">財務応援担当<br/>鳥飼・渡邊（経営）</span></div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell empty"></div>
-  <div class="swim-cell">
-    <div class="task finance"><div class="task-what">携帯でLINE報告を確認<br/>（集金状況のリアルタイム把握）</div><div class="task-where">営業所LINE</div><div class="task-freq">随時</div></div>
-  </div>
-  <div class="swim-cell">
-    <div class="task finance"><div class="task-what">財務応援（経理ソフト）に打ち込み</div><div class="task-where">経理ソフト</div><div class="task-freq">集金シートのタイミング</div></div>
-    <div class="task finance"><div class="task-what">毎月20日締め</div><div class="task-where">—</div><div class="task-freq">土日絡みは前日入金必要</div></div>
-    <div class="task finance"><div class="task-what">鳥飼氏：繰越管理</div><div class="task-where">口頭／記憶</div><div class="task-freq">月300件中15〜20件繰越<br/>（10件削減可と見立て）</div></div>
-  </div>
 
 </div>
 </div>
@@ -379,16 +366,16 @@
     <div class="num">19</div><div>本社事務（岸）</div><div>「集金シート」に集金のあったお客様のみ抽出（財務応援打込用）</div><div>Excel 集金シート</div><div>月次</div><div class="src">MTG#8</div>
   </div>
   <div class="steplist-row">
-    <div class="num">20</div><div>経理（財務応援担当）</div><div>集金シートをベースに財務応援（経理ソフト）へ打ち込み</div><div>経理ソフト</div><div>随時</div><div class="src">MTG#8</div>
+    <div class="num">20</div><div>本社事務</div><div>集金シートをベースに財務応援（経理ソフト）へ打ち込み</div><div>経理ソフト</div><div>随時</div><div class="src">MTG#8</div>
   </div>
   <div class="steplist-row">
     <div class="num">21</div><div>所長</div><div>営業所財布（売上・経費同一）の残高管理表で月次ゼロ合わせ</div><div>残高管理表Excel</div><div>月次</div><div class="src">MTG#8</div>
   </div>
   <div class="steplist-row">
-    <div class="num">22</div><div>経理</div><div>毎月20日締め（土日絡みは前日入金必要）</div><div>—</div><div>月1</div><div class="src">MTG#7 t=2317</div>
+    <div class="num">22</div><div>本社事務</div><div>毎月20日締め（土日絡みは前日入金必要）</div><div>—</div><div>月1</div><div class="src">MTG#7 t=2317</div>
   </div>
   <div class="steplist-row">
-    <div class="num">23</div><div>鳥飼氏</div><div>繰越15〜20件／月の把握（10件は削減可能と見立て）</div><div>口頭／記憶</div><div>月次</div><div class="src">MTG#5 <span class="chip hot">⚠属人化</span></div>
+    <div class="num">23</div><div>本社事務（鳥飼氏把握）</div><div>繰越15〜20件／月の把握（10件は削減可能と見立て）</div><div>口頭／記憶</div><div>月次</div><div class="src">MTG#5 <span class="chip hot">⚠属人化</span></div>
   </div>
   <div class="steplist-row">
     <div class="num">24</div><div>本社事務（岸）</div><div>毎週月曜にチラシ集計Excelを地域・週ごとに更新</div><div>Excel チラシ集計</div><div>毎週月曜</div><div class="src">MTG#7 t=539</div>
