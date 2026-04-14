@@ -197,6 +197,19 @@
   }
   .decision-card.opt-a { border-top-color: #dc2626; }
   .decision-card.opt-b { border-top-color: #2563eb; }
+  .decision-card.selected { outline: 4px solid #fbbf24; transform: scale(1.02); }
+  .decision-card.selected::after {
+    content: "✅ 本日決定"; position: absolute; top: -14px; right: -8px;
+    background: #16a34a; color: white; padding: 4px 12px; border-radius: 14px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+    box-shadow: 0 4px 10px rgba(22,163,74,0.4);
+  }
+  .decision-card.deferred { opacity: 0.55; filter: grayscale(0.4); }
+  .decision-card.deferred::after {
+    content: "⏭ 次フェーズに持ち越し"; position: absolute; top: -14px; right: -8px;
+    background: #78716c; color: white; padding: 4px 12px; border-radius: 14px;
+    font-size: 11px; font-weight: 700;
+  }
   .decision-card h3 { margin: 0 0 2px; font-size: 15px; border: none; padding: 0; }
   .decision-card .target { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
   .decision-card .pros, .decision-card .cons { font-size: 12px; margin: 6px 0; padding-left: 18px; }
@@ -211,14 +224,14 @@
   .decision-note strong { color: #fbbf24; }
 
   /* Highlighted STEP headers/columns */
-  .flow-node.highlight-a { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); }
-  .flow-node.highlight-a::before { content: "⚡本日の論点A"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 2px 10px; border-radius: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; }
-  .flow-node.highlight-b { background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%); }
-  .flow-node.highlight-b::before { content: "⚡本日の論点B"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 2px 10px; border-radius: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; }
-  .swim-head.highlight-a { background: #dc2626; position: relative; }
-  .swim-head.highlight-a::before { content: "⚡論点A"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
-  .swim-head.highlight-b { background: #2563eb; position: relative; }
-  .swim-head.highlight-b::before { content: "⚡論点B"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+  .flow-node.highlight-a { background: linear-gradient(180deg, #78716c 0%, #57534e 100%); opacity: 0.85; }
+  .flow-node.highlight-a::before { content: "⏭ 次フェーズ持ち越し"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #e7e5e4; color: #44403c; padding: 2px 10px; border-radius: 10px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; }
+  .flow-node.highlight-b { background: linear-gradient(180deg, #16a34a 0%, #15803d 100%); box-shadow: 0 0 0 3px #fbbf24, 0 4px 12px rgba(22,163,74,0.4); }
+  .flow-node.highlight-b::before { content: "✅ 4月着手"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 3px 12px; border-radius: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; z-index: 3; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+  .swim-head.highlight-a { background: #78716c; position: relative; opacity: 0.9; }
+  .swim-head.highlight-a::before { content: "⏭次"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #e7e5e4; color: #44403c; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+  .swim-head.highlight-b { background: #16a34a; position: relative; box-shadow: 0 0 0 2px #fbbf24; }
+  .swim-head.highlight-b::before { content: "✅着手"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; padding: 1px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; white-space: nowrap; }
   .flow-map-inner { padding-top: 10px; }
   .swim-grid { padding-top: 10px; }
 
@@ -249,11 +262,11 @@
 </header>
 
 <div class="decision-banner">
-  <span class="tag">本日 2026-04-14 の決裁事項</span>
-  <h2>4月の構築着手ポイントを STEP 2 と STEP 4 のどちらかを決めたうえで日程調整</h2>
-  <div class="sub">事務の入力業務を減らす起点として、<strong>問い合わせ時点のデータ入力（STEP 2）を新オペレーションで作り直す</strong>か、<strong>契約データまわり（STEP 4）から先に着手する</strong>かを今日決めたい。</div>
+  <span class="tag" style="background:#16a34a; color:white;">✅ 2026-04-14 決定</span>
+  <h2>4月の構築着手ポイントは STEP 4（契約データまわり）に決定</h2>
+  <div class="sub"><strong>STEP 4 から着手</strong>してデータ基盤（顧客オブジェクト）を先に整え、事務の日常作業への即日効果を優先する。<strong>STEP 2（問い合わせ時入力の新オペ）は次フェーズ</strong>に持ち越し、P2 追加スコープとして別途提案する。以降 §1・§2 は ⚡ 印で STEP 4 を注視対象として確認する。</div>
   <div class="decision-cards">
-    <div class="decision-card opt-a">
+    <div class="decision-card opt-a deferred">
       <h3>🅰 STEP 2：問い合わせ時入力の新オペレーション構築</h3>
       <div class="target">対象：公式LINE／電話／チラシQR → お客様入力 or 音声AI自動データ化</div>
       <span class="pros-label">メリット</span>
@@ -270,8 +283,8 @@
         <li>成果が「事務の楽さ」に出るまで時間がかかる（完成後からでないと効果が出ない）</li>
       </ul>
     </div>
-    <div class="decision-vs">VS</div>
-    <div class="decision-card opt-b">
+    <div class="decision-vs">→</div>
+    <div class="decision-card opt-b selected">
       <h3>🅱 STEP 4：契約データまわりから着手</h3>
       <div class="target">対象：Excel「顧客情報2026」「顧客データ」→ Salesforce 移行、契約書電子化検討</div>
       <span class="pros-label">メリット</span>
@@ -290,7 +303,11 @@
     </div>
   </div>
   <div class="decision-note">
-    <strong>推奨の考え方</strong>：STEP 2 は「発生源対策」、STEP 4 は「下流整流」。どちらも必要だが 4月の限られた期間（要件定義〜構築まで6〜8週）で片方のみを深く作るなら、<strong>事務の負荷削減インパクト</strong>と<strong>他ステップへの波及効果</strong>を軸に判断する。関連箇所を §1（スイムレーン）・§2（課題マッピング）で ⚡マーク付きで強調表示している。
+    <strong>決定後の進め方</strong>：
+    ① Excel「顧客情報2026」「顧客データ」の構造を Salesforce 顧客オブジェクトへマッピング ／
+    ② 歩合計算の番号列（丸1／丸2／丸3）・評価・感想列のフィールド再定義 ／
+    ③ 契約書OCR困難（D1）の判定を受けて<strong>電子契約化</strong>の方式を並行検討（P2 候補として整理） ／
+    ④ STEP 2 の新オペ（B1〜B4）は要求をストックした上で 5月中旬後半の追加スコープ提案に回す。
   </div>
 </div>
 
